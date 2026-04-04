@@ -1,0 +1,225 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================
+   DESIGN SYSTEM — All colors, fonts, etc.
+   All colors MUST be HSL.
+   ============================================= */
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* =============================================
+   SPLASH SCREEN ANIMATIONS
+   Edit the durations, delays, and transforms below to customize the startup animation.
+   ============================================= */
+
+/* --- Book container: slight shrink at end --- */
+/* EDIT: Change "1.5s" to make the whole animation faster/slower */
+@keyframes splash-book-shrink {
+  0%, 85% { transform: scale(1); }
+  100%    { transform: scale(0.95); }
+}
+.splash-book {
+  animation: splash-book-shrink 1.5s ease-in-out forwards;
+}
+
+/* --- Front cover opens (rotateY around left edge) --- */
+/* EDIT: Change "-165deg" for how far the cover opens */
+@keyframes book-cover-open {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(-165deg); }
+}
+.book-cover {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation: book-cover-open 0.4s ease-in-out 0.15s forwards;
+}
+
+/* --- Pages flip one by one --- */
+/* EDIT: Change the final rotateY angle for each page */
+@keyframes book-page-1 {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(-150deg); }
+}
+@keyframes book-page-2 {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(-155deg); }
+}
+@keyframes book-page-3 {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(-160deg); }
+}
+
+.book-page-1 {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation: book-page-1 0.3s ease-in-out 0.5s forwards;
+}
+.book-page-2 {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation: book-page-2 0.3s ease-in-out 0.75s forwards;
+}
+.book-page-3 {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation: book-page-3 0.3s ease-in-out 1.0s forwards;
+}
+
+/* --- Title text fades in --- */
+/* EDIT: Change "0.9s" delay to show the text earlier or later */
+@keyframes splash-text-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.splash-title {
+  opacity: 0;
+  animation: splash-text-in 0.35s ease-out 0.5s forwards;
+}
+
+/* --- Loading bar grows --- */
+
+@keyframes splash-bar-grow {
+  from { width: 0; }
+  to   { width: 150px; }
+}
+.splash-bar {
+  height: 2px;
+  border-radius: 9999px;
+  background: hsl(var(--foreground) / 0.2);
+  animation: splash-bar-grow 1.2s ease-in-out 0.1s forwards;
+  width: 0;
+}
+
+/* --- Splash screen fade out --- */
+@keyframes splash-fade-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.98); }
+}
+.splash-exit {
+  animation: splash-fade-out 0.35s ease-in-out forwards;
+}
+
+/* =============================================
+   FILE EXPLORER — Slide animations for folder navigation
+   EDIT: Change durations (0.15s/0.2s) to make transitions faster/slower
+   ============================================= */
+@keyframes slide-out-left {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(-40px); }
+}
+@keyframes slide-out-right {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(40px); }
+}
+@keyframes slide-in-from-right {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slide-in-from-left {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.slide-exit-left {
+  animation: slide-out-left 0.15s ease-in forwards;
+}
+.slide-exit-right {
+  animation: slide-out-right 0.15s ease-in forwards;
+}
+.slide-enter-left {
+  animation: slide-in-from-right 0.2s ease-out forwards;
+}
+.slide-enter-right {
+  animation: slide-in-from-left 0.2s ease-out forwards;
+}
