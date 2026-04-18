@@ -299,6 +299,7 @@ const Index = () => {
               src="https://shs-pyqp-project.vercel.app/resources"
               title="Interactive Quizzes"
               className="flex-1 w-full border-0 bg-background"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
             />
           </div>
         </div>
