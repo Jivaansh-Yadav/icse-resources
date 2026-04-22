@@ -8,6 +8,12 @@
 
 This website provides comprehensive and organized study resources specifically tailored for ICSE Class 10 students. It offers easy access to a wide range of educational materials, helping students prepare effectively for their examinations and enhance their overall learning experience. With intuitive navigation and search capabilities, it significantly improves study efficiency and accessibility for students.
 
+<div align="center">
+  <a href="https://icse-resources.pages.dev/">Live Website</a> &nbsp;|&nbsp;
+  <a href="https://github.com/Jivaansh-Yadav/icse-resources#features">Features</a> &nbsp;|&nbsp;
+  <a href="https://github.com/Jivaansh-Yadav/icse-resources#tech-stack">Tech Stack</a>
+</div>
+
 ## Features
 
 - **File Explorer**: Browse through organized folders and files of study materials with an intuitive tree structure
