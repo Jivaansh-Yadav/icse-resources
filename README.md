@@ -1,9 +1,9 @@
 # Class 10 ICSE Study Materials
 
-[![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-blue.svg)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-5.1.0-yellow.svg)](https://vitejs.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.0-38B2AC.svg)](https://tailwindcss.com/)
+[![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-6.0.0-yellow.svg)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.17-38B2AC.svg)](https://tailwindcss.com/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-latest-black.svg)](https://ui.shadcn.com/)
 
 This website provides comprehensive and organized study resources specifically tailored for ICSE Class 10 students. It offers easy access to a wide range of educational materials, helping students prepare effectively for their examinations and enhance their overall learning experience. With intuitive navigation and search capabilities, it significantly improves study efficiency and accessibility for students.
@@ -65,8 +65,11 @@ This website provides comprehensive and organized study resources specifically t
 ## Dependencies
 
 - React: ^18.3.1
-- ESLint: ^9.32.0
-- Fuse.js: ^7.2.0 (for fast file searching)
 - TypeScript: ^5.8.3
 - Vite: ^6.0.0
 - Tailwind CSS: ^3.4.17
+- ESLint: ^9.32.0
+- Fuse.js: ^7.2.0 (for fast file searching)
+- Lucide React: ^0.462.0 (icons)
+- React Router DOM: ^6.30.1 (routing)
+- Zod: ^3.25.76 (schema validation)

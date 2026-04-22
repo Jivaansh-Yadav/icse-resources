@@ -19,6 +19,7 @@ dist-ssr
 *.sw?
 
 service-account.json
+generate-drive-json.js
 
 # wrangler files
 .wrangler
