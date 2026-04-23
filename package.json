@@ -11,7 +11,7 @@
     "preview": "npm run build && wrangler dev",
     "test": "vitest run",
     "test:watch": "vitest",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && npx wrangler pages deploy dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
