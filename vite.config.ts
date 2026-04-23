@@ -2,19 +2,23 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
-import { cloudflare } from "@cloudflare/vite-plugin";
-
 export default defineConfig({
-  plugins: [react(), cloudflare()],
+  plugins: [react()],
   resolve: {
-    alias: { "@": path.resolve(__dirname, "src") },
-    dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
   server: {
     host: "::",
     port: 1176,
-    hmr: {
-      overlay: false,
-    },
+  },
+  preview: {
+    port: 1176,
+    host: "::",
+  },
+  build: {
+    target: "esnext",
+    minify: "esbuild",
   },
 });
