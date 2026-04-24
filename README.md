@@ -6,11 +6,12 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.17-38B2AC.svg)](https://tailwindcss.com/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-latest-black.svg)](https://ui.shadcn.com/)
 
-This website provides comprehensive and organized study resources specifically tailored for ICSE Class 10 students. It offers easy access to a wide range of educational materials, helping students prepare effectively for their examinations and enhance their overall learning experience. With intuitive navigation and search capabilities, it significantly improves study efficiency and accessibility for students.
+This website provides comprehensive and organized <em>study resources</em> specifically tailored for <em>ICSE Class 10</em> students. It offers easy access to a wide range of educational materials, helping students prepare effectively for their examinations and enhance their overall learning experience. With intuitive navigation and search capabilities, it significantly improves study efficiency and accessibility for students. The website also includes <em>**interactive quizzes**</em> to help students test their knowledge and reinforce key concepts.
 
 <div align="center">
   <a href="https://icse-resources.pages.dev/">Live Website</a> &nbsp;|&nbsp;
   <a href="https://github.com/Jivaansh-Yadav/icse-resources#features">Features</a> &nbsp;|&nbsp;
+  <a href="https://github.com/Jivaansh-Yadav/icse-resources#usage">Usage</a> &nbsp;|&nbsp;
   <a href="https://github.com/Jivaansh-Yadav/icse-resources#tech-stack">Tech Stack</a>
 </div>
 
@@ -18,12 +19,20 @@ This website provides comprehensive and organized study resources specifically t
 
 - **File Explorer**: Browse through organized folders and files of study materials with an intuitive tree structure
 - **Powerful Search**: Quickly search across all materials using Fuse.js for fast and accurate results, accessible via keyboard shortcuts (Ctrl+K / Cmd+K)
+- **Interactive Quizzes**: Test your knowledge with subject-wise quizzes for classes 9-12 designed to reinforce key concepts and help you assess your exam readiness
 - **Dark/Light Theme**: Toggle between themes for comfortable reading in any environment
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices for learning on the go
 - **Fast Loading**: Powered by Vite for quick loading times and smooth performance
 - **Keyboard Navigation**: Full keyboard support for efficient browsing without mouse usage
 - **Organized Content**: Materials are categorized and structured for easy discovery of relevant topics
 - **Modern UI**: Clean, accessible interface built with shadcn/ui components and Tailwind CSS
+
+## Usage
+
+- **Browse Materials**: Use the file explorer to navigate through folders
+- **Search**: Press `Ctrl+K` (or `Cmd+K` on Mac) to open the search modal
+- **Theme Toggle**: Click the sun/moon icon to switch between light and dark themes
+- **View Files**: Click on files to access study materials
 
 ## Tech Stack
 
@@ -54,13 +63,6 @@ This website provides comprehensive and organized study resources specifically t
    ```
 
 4. **Open your browser** and navigate to `http://localhost:1176`
-
-## Usage
-
-- **Browse Materials**: Use the file explorer to navigate through folders
-- **Search**: Press `Ctrl+K` (or `Cmd+K` on Mac) to open the search modal
-- **Theme Toggle**: Click the sun/moon icon to switch between light and dark themes
-- **View Files**: Click on files to access study materials
 
 ## Dependencies
 
