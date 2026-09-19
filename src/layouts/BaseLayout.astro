@@ -1,0 +1,86 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../index.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  currentPath?: string;
+  ogImage?: string;
+}
+
+const {
+  title = "ICSE Resources - Class 10 Notes, Papers & Syllabi",
+  description = "Comprehensive educational hub for ICSE Class 10 students. Access official syllabi, specimen papers, chapter notes, and quizzes.",
+  currentPath = Astro.url.pathname,
+  ogImage = "/og-image.jpg",
+} = Astro.props;
+
+const canonicalUrl = new URL(currentPath, Astro.site || "https://class10icse.pages.dev").href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph & Social Metadata -->
+    <meta property="og:site_name" content="ICSE Resources" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- ZERO-FOUC INLINE SCRIPT: Evaluated synchronously before DOM render to eliminate flash -->
+    <script is:inline>
+      (function () {
+        try {
+          const stored = localStorage.getItem("theme");
+          const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const theme = stored ? stored : (prefersDark ? "dark" : "light");
+          if (theme === "dark") {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body class="bg-background text-foreground min-h-screen flex flex-col antialiased selection:bg-primary/20 selection:text-primary relative">
+    <!-- Ambient glowing backdrop blobs -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
+      <div class="absolute inset-0 bg-background"></div>
+      <div class="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full opacity-20 dark:opacity-10 blur-3xl animate-pulse" style="background: hsl(var(--primary));"></div>
+      <div class="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full opacity-15 dark:opacity-[0.07] blur-3xl animate-pulse" style="background: hsl(var(--primary) / 0.7); animation-delay: 2s;"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full opacity-10 dark:opacity-[0.05] blur-3xl animate-pulse" style="background: hsl(var(--accent)); animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Global Header -->
+    <Header currentPath={currentPath} />
+
+    <!-- Main Content Shell -->
+    <main class="min-h-screen flex-1">
+      <slot />
+    </main>
+
+    <!-- Global Footer -->
+    <Footer />
+
+    <!-- Slot for Island Modals (Search, Info, Donate, Quizzes, Explorer) -->
+    <slot name="modals" />
+  </body>
+</html>

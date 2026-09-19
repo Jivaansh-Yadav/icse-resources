@@ -1,0 +1,144 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="w-full border-t border-border/40 bg-card/60 backdrop-blur-sm text-muted-foreground mt-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      <!-- Col 1: Site Info & Mission -->
+      <div class="md:col-span-1 space-y-3">
+        <div class="flex items-center gap-2 font-bold text-foreground">
+          <div class="p-1.5 rounded-lg bg-primary/10 text-primary">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+          </div>
+          <span>ICSE Resources</span>
+        </div>
+        <p class="text-xs leading-relaxed">
+          Free, open educational portal empowering Class 10 ICSE students with curriculum syllabus, specimen question papers, revision notes, and past year papers.
+        </p>
+        <p class="text-xs">
+          Built with dedication by <a href="/about" class="text-foreground hover:underline font-medium">Jivaansh Yadav</a>.
+        </p>
+      </div>
+
+      <!-- Col 2: Educational Resources -->
+      <div>
+        <h3 class="text-xs font-semibold text-foreground uppercase tracking-wider mb-3">Resources</h3>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a href="/study-materials" class="hover:text-foreground transition-colors">
+              Study Materials
+            </a>
+          </li>
+          <li>
+            <a href="/cisce" class="hover:text-foreground transition-colors">
+              CISCE Directory
+            </a>
+          </li>
+          <li>
+            <a href="/quizzes" class="hover:text-foreground transition-colors">
+              Interactive Quizzes
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Compliance & Legal (Mandatory for AdSense) -->
+      <div>
+        <h3 class="text-xs font-semibold text-foreground uppercase tracking-wider mb-3">Compliance & Info</h3>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a href="/about" class="hover:text-foreground transition-colors">
+              About Us
+            </a>
+          </li>
+          <li>
+            <a href="/contact" class="hover:text-foreground transition-colors">
+              Contact Developer
+            </a>
+          </li>
+          <li>
+            <a href="/privacy" class="hover:text-foreground transition-colors">
+              Privacy & AdSense Policy
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Community & Support -->
+      <div>
+        <h3 class="text-xs font-semibold text-foreground uppercase tracking-wider mb-3">Community</h3>
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a
+              href="https://reddit.com/r/ICSE"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-foreground transition-colors inline-flex items-center gap-1.5"
+            >
+              Reddit (r/ICSE)
+              <svg class="h-3 w-3 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="21" y1="3" x2="14" y2="10"></line>
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://discord.gg/xGD8SnvuKX"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-foreground transition-colors inline-flex items-center gap-1.5"
+            >
+              Discord (ICSEcord)
+              <svg class="h-3 w-3 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="21" y1="3" x2="14" y2="10"></line>
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/Jivaansh-Yadav/class-10-icse"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-foreground transition-colors inline-flex items-center gap-1.5"
+            >
+              GitHub Repository
+              <svg class="h-3 w-3 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="21" y1="3" x2="14" y2="10"></line>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- AdSense Advertising & Cookies Disclosure -->
+    <div class="border-t border-border/40 pt-6 pb-4 text-xs leading-relaxed space-y-2">
+      <p>
+        <strong class="text-foreground">Advertising & Third-Party Disclosure:</strong> This website uses Google AdSense and third-party advertising partners to serve advertisements. Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites. Google's use of advertising cookies enables it and its partners to serve ads to users based on their visits to sites on the Internet. Users may opt out of personalized advertising by visiting <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" class="underline hover:text-foreground">AboutAds.info</a> or Google's <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-foreground">Ad Settings</a>.
+      </p>
+      <p>
+        <strong class="text-foreground">Disclaimer:</strong> ICSE Resources is an independent educational reference project and is NOT officially affiliated with, endorsed by, or sponsored by the Council for the Indian School Certificate Examinations (CISCE). All exam names, syllabi, marks distributions, and specimen materials are the intellectual property of their respective governing bodies.
+      </p>
+    </div>
+
+    <!-- Copyright Bar -->
+    <div class="border-t border-border/40 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs gap-3">
+      <p>© {currentYear} ICSE Resources. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="/privacy" class="hover:text-foreground transition-colors">Privacy Policy</a>
+        <a href="/about" class="hover:text-foreground transition-colors">About</a>
+        <a href="/contact" class="hover:text-foreground transition-colors">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>

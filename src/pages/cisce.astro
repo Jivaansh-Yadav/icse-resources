@@ -1,0 +1,395 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCisceResourcesSync, countFiles } from "../lib/data";
+import type { FileNode } from "../lib/schemas";
+
+const cisceData = getCisceResourcesSync();
+const topLevelFolders = (cisceData.children || []).filter((c) => c.type === "folder");
+const officialDocs = (cisceData.children || []).filter((c) => c.type === "file");
+
+// Helper to flatten category children into groups
+function getCategoryGroups(categoryFolder?: FileNode) {
+  if (!categoryFolder || !categoryFolder.children) return [];
+
+  const subFolders = categoryFolder.children.filter((c) => c.type === "folder");
+  const directFiles = categoryFolder.children.filter((c) => c.type === "file");
+
+  const groups: { title: string; files: FileNode[] }[] = [];
+
+  if (directFiles.length > 0) {
+    groups.push({
+      title: "Core Documents",
+      files: directFiles,
+    });
+  }
+
+  for (const sf of subFolders) {
+    const files: FileNode[] = [];
+    function collect(n: FileNode) {
+      if (n.type === "file" && n.id) {
+        files.push(n);
+      } else if (n.children) {
+        for (const ch of n.children) collect(ch);
+      }
+    }
+    collect(sf);
+
+    groups.push({
+      title: sf.name,
+      files,
+    });
+  }
+
+  return groups;
+}
+
+const syllabusFolder = topLevelFolders.find((f) => /Syllabus/i.test(f.name));
+const specimenFolder = topLevelFolders.find((f) => /Specimen/i.test(f.name));
+const pyqFolder = topLevelFolders.find((f) => /PYQ/i.test(f.name));
+const pupilFolder = topLevelFolders.find((f) => /Pupil Performance/i.test(f.name));
+const cfqFolder = topLevelFolders.find((f) => /CFQ|Competency/i.test(f.name));
+const labFolder = topLevelFolders.find((f) => /Laboratory/i.test(f.name));
+---
+
+<BaseLayout
+  title="Official CISCE Resources: Syllabus, Specimen Question Papers & PYQs"
+  description="Official CISCE portal for ICSE Class 10: download latest 2026-2027 syllabus, Specimen Question Papers (Specimen QPs), Previous Year Questions (PYQs), and Analysis of Pupil Performance."
+  currentPath="/cisce"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center gap-2 text-sm text-muted-foreground" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-foreground transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-foreground font-medium">CISCE Resources</span>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="space-y-4 border-b border-border/40 pb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold">
+        Official Council for the Indian School Certificate Examinations Directory
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight">
+        Official CISCE Resources: Syllabus, Specimen Question Papers & PYQs
+      </h1>
+      <p class="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed">
+        Access official examination regulations, curriculum syllabi for the 2024-2027 examination cycles, Council specimen question papers, past board question papers, and in-depth examiner pupil performance analysis reports.
+      </p>
+
+      <!-- Category Navigation Pills -->
+      <div class="flex flex-wrap gap-2 pt-4">
+        <a href="#syllabus" class="px-3 py-1.5 rounded-lg border border-border bg-card/60 hover:bg-accent text-xs sm:text-sm font-medium transition-colors">
+          Syllabus ({syllabusFolder ? countFiles(syllabusFolder) : 0})
+        </a>
+        <a href="#specimen-qps" class="px-3 py-1.5 rounded-lg border border-border bg-card/60 hover:bg-accent text-xs sm:text-sm font-medium transition-colors">
+          Specimen Question Papers ({specimenFolder ? countFiles(specimenFolder) : 0})
+        </a>
+        <a href="#pyqs" class="px-3 py-1.5 rounded-lg border border-border bg-card/60 hover:bg-accent text-xs sm:text-sm font-medium transition-colors">
+          Previous Year Questions ({pyqFolder ? countFiles(pyqFolder) : 0})
+        </a>
+        <a href="#pupil-performance" class="px-3 py-1.5 rounded-lg border border-border bg-card/60 hover:bg-accent text-xs sm:text-sm font-medium transition-colors">
+          Analysis of Pupil Performance ({pupilFolder ? countFiles(pupilFolder) : 0})
+        </a>
+        <a href="#cfqs" class="px-3 py-1.5 rounded-lg border border-border bg-card/60 hover:bg-accent text-xs sm:text-sm font-medium transition-colors">
+          CFQs & Laboratory Content
+        </a>
+      </div>
+    </header>
+
+    <!-- Official Governing Documents Section -->
+    {officialDocs.length > 0 && (
+      <section class="space-y-4">
+        <h2 class="text-xl sm:text-2xl font-bold text-foreground">Official Regulations & Examination Guidelines</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {officialDocs.map((doc) => (
+            <div class="rounded-xl border border-border bg-card p-5 hover:border-primary/40 transition-colors flex flex-col justify-between">
+              <div class="space-y-2">
+                <span class="p-1 rounded bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">Official Circular</span>
+                <h3 class="text-sm font-bold text-foreground leading-snug">{doc.name}</h3>
+              </div>
+              {doc.id && (
+                <div class="pt-4 mt-auto">
+                  <a
+                    href={`https://drive.google.com/file/d/${doc.id}/view`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    View Official PDF &rarr;
+                  </a>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Category 1: Syllabus -->
+    {syllabusFolder && (
+      <section id="syllabus" class="space-y-6 scroll-mt-24 border-t border-border/40 pt-10">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
+            <span>Syllabus & Regulations (2024-2027)</span>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+              {countFiles(syllabusFolder)} Subject Curriculums
+            </span>
+          </h2>
+          <p class="text-sm text-muted-foreground mt-1">
+            Official CISCE curriculum documents outlining the scope of syllabus, chapter-wise weightage, and internal assessment guidelines for the 2026 and 2027 board exam cycles.
+          </p>
+        </div>
+
+        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(syllabusFolder.children || []).map((file) => (
+            <li class="rounded-xl border border-border bg-card p-4 hover:border-primary/40 transition-colors flex flex-col justify-between">
+              <div>
+                <span class="text-xs font-semibold text-primary block mb-1">Official Syllabus</span>
+                <h3 class="text-sm font-bold text-foreground">{file.name}</h3>
+              </div>
+              {file.id && (
+                <div class="pt-3 mt-auto">
+                  <a
+                    href={`https://drive.google.com/file/d/${file.id}/view`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    Download Syllabus &rarr;
+                  </a>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <!-- Category 2: Specimen Question Papers (Specimen QPs) -->
+    {specimenFolder && (
+      <section id="specimen-qps" class="space-y-6 scroll-mt-24 border-t border-border/40 pt-10">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
+            <span>Specimen Question Papers (Specimen QPs)</span>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+              2024, 2025, 2026 Examination Patterns
+            </span>
+          </h2>
+          <p class="text-sm text-muted-foreground mt-1">
+            Council specimen papers showcasing the latest question formats, including Competency-Focused Questions (CFQs), multiple-choice items, and assertion-reasoning problems.
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          {getCategoryGroups(specimenFolder).map((group) => (
+            <div class="space-y-3">
+              <h3 class="text-lg font-semibold text-foreground border-l-2 border-primary pl-3">
+                Class 10 Specimen Papers — {group.title}
+              </h3>
+              <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {group.files.map((file) => (
+                  <li class="rounded-lg border border-border/60 bg-card p-3.5 hover:border-primary/40 transition-colors flex flex-col justify-between">
+                    <span class="text-sm font-medium text-foreground line-clamp-2">{file.name}</span>
+                    {file.id && (
+                      <div class="pt-2 mt-auto">
+                        <a
+                          href={`https://drive.google.com/file/d/${file.id}/view`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-xs font-semibold text-primary hover:underline"
+                        >
+                          View Specimen QP &rarr;
+                        </a>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Category 3: Previous Year Questions (PYQs) -->
+    {pyqFolder && (
+      <section id="pyqs" class="space-y-6 scroll-mt-24 border-t border-border/40 pt-10">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
+            <span>Previous Year Questions (PYQs)</span>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+              2017 to 2024 Board Papers
+            </span>
+          </h2>
+          <p class="text-sm text-muted-foreground mt-1">
+            Real board examination question papers for comprehensive practice, marks distribution analysis, and exam time management.
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          {getCategoryGroups(pyqFolder).map((group) => (
+            <div class="space-y-3">
+              <h3 class="text-lg font-semibold text-foreground border-l-2 border-primary pl-3">
+                Year: {group.title}
+              </h3>
+              <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {group.files.map((file) => (
+                  <li class="rounded-lg border border-border/60 bg-card p-3.5 hover:border-primary/40 transition-colors flex flex-col justify-between">
+                    <span class="text-sm font-medium text-foreground line-clamp-2">{file.name}</span>
+                    {file.id && (
+                      <div class="pt-2 mt-auto">
+                        <a
+                          href={`https://drive.google.com/file/d/${file.id}/view`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-xs font-semibold text-primary hover:underline"
+                        >
+                          View Board Paper &rarr;
+                        </a>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Category 4: Analysis of Pupil Performance -->
+    {pupilFolder && (
+      <section id="pupil-performance" class="space-y-6 scroll-mt-24 border-t border-border/40 pt-10">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
+            <span>Analysis of Pupil Performance</span>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+              2013 to 2025 Examiner Reports
+            </span>
+          </h2>
+          <p class="text-sm text-muted-foreground mt-1">
+            Official examiner evaluations highlighting recurring student mistakes, question-by-question scoring trends, and essential guidance on crafting high-scoring answers.
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          {getCategoryGroups(pupilFolder).map((group) => (
+            <div class="space-y-3">
+              <h3 class="text-lg font-semibold text-foreground border-l-2 border-primary pl-3">
+                Analysis Year: {group.title}
+              </h3>
+              <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {group.files.map((file) => (
+                  <li class="rounded-lg border border-border/60 bg-card p-3.5 hover:border-primary/40 transition-colors flex flex-col justify-between">
+                    <span class="text-sm font-medium text-foreground line-clamp-2">{file.name}</span>
+                    {file.id && (
+                      <div class="pt-2 mt-auto">
+                        <a
+                          href={`https://drive.google.com/file/d/${file.id}/view`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-xs font-semibold text-primary hover:underline"
+                        >
+                          Open Examiner Analysis &rarr;
+                        </a>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Category 5: CFQs & Laboratory Requirements -->
+    <section id="cfqs" class="space-y-6 scroll-mt-24 border-t border-border/40 pt-10">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
+          <span>Competency-Focused Questions (CFQs) & Laboratory Content</span>
+        </h2>
+        <p class="text-sm text-muted-foreground mt-1">
+          Specialized competency question booklets and science laboratory equipment requirements defined by the Council.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- CFQs -->
+        {cfqFolder && (
+          <div class="rounded-xl border border-border bg-card p-6 space-y-4">
+            <h3 class="text-lg font-bold text-foreground">Competency-Focused Questions (CFQs)</h3>
+            <p class="text-xs text-muted-foreground">
+              Official subject booklets designed to enhance conceptual understanding and application-based problem solving.
+            </p>
+            <ul class="space-y-2">
+              {(cfqFolder.children || []).map((item) => (
+                <li class="flex items-center justify-between text-sm py-1 border-b border-border/30">
+                  <span class="text-foreground font-medium">{item.name}</span>
+                  {item.id && (
+                    <a
+                      href={`https://drive.google.com/file/d/${item.id}/view`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-xs font-semibold text-primary hover:underline shrink-0 ml-2"
+                    >
+                      Download &rarr;
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- Laboratory Requirements -->
+        {labFolder && (
+          <div class="rounded-xl border border-border bg-card p-6 space-y-4">
+            <h3 class="text-lg font-bold text-foreground">Laboratory Requirements</h3>
+            <p class="text-xs text-muted-foreground">
+              Official lists of apparatus, chemical reagents, and physical specimens required for ICSE science laboratory practicals.
+            </p>
+            <ul class="space-y-2">
+              {(labFolder.children || []).map((item) => (
+                <li class="flex items-center justify-between text-sm py-1 border-b border-border/30">
+                  <span class="text-foreground font-medium">{item.name}</span>
+                  {item.id && (
+                    <a
+                      href={`https://drive.google.com/file/d/${item.id}/view`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-xs font-semibold text-primary hover:underline shrink-0 ml-2"
+                    >
+                      Download &rarr;
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Bottom Navigation Bar -->
+    <section class="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-4">
+      <h2 class="text-xl font-bold text-foreground">Need Class 10 Notes or Revision Guides?</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        Complement your CISCE syllabus and question paper study with textbook solutions and revision notes across all 11 subjects:
+      </p>
+      <div class="flex flex-wrap gap-4 pt-2">
+        <a href="/" class="text-sm font-semibold text-primary hover:underline">
+          &larr; Return to Home
+        </a>
+        <a href="/study-materials" class="text-sm font-semibold text-primary hover:underline">
+          Browse Study Materials &rarr;
+        </a>
+        <a href="/quizzes" class="text-sm font-semibold text-primary hover:underline">
+          Interactive Quizzes &rarr;
+        </a>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>

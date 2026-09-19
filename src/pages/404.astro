@@ -1,0 +1,59 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="404: Page Not Found - ICSE Resources"
+  description="Oops! The page or study resource you are looking for cannot be found. Return to the ICSE Resources home page."
+  currentPath="/404"
+>
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-20 text-center space-y-8 animate-fade-in">
+
+    <!-- Icon Badge -->
+    <div class="inline-flex p-4 rounded-3xl bg-primary/10 text-primary shadow-sm">
+      <svg class="h-16 w-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
+        <path d="M6 6h10"></path>
+        <path d="M6 10h10"></path>
+        <path d="m14 14-4 4"></path>
+        <path d="m10 14 4 4"></path>
+      </svg>
+    </div>
+
+    <!-- Heading & Explanation -->
+    <div class="space-y-3">
+      <h1 class="text-5xl sm:text-6xl font-extrabold text-foreground tracking-tight">
+        404
+      </h1>
+      <h2 class="text-2xl sm:text-3xl font-bold text-foreground">
+        Page Not Found
+      </h2>
+      <p class="text-muted-foreground text-base max-w-md mx-auto leading-relaxed">
+        The page you are looking for might have been moved, renamed, or does not exist. Let's get you back to studying!
+      </p>
+    </div>
+
+    <!-- Quick Navigation Recovery Buttons -->
+    <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
+      <a
+        href="/"
+        class="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm shadow-md hover:opacity-90 active:scale-95 transition-all"
+      >
+        Return to Home Page
+      </a>
+      <a
+        href="/study-materials"
+        class="px-6 py-3 rounded-xl border border-border bg-card hover:bg-accent text-foreground font-semibold text-sm shadow-sm transition-all"
+      >
+        Browse Study Materials
+      </a>
+      <a
+        href="/cisce"
+        class="px-6 py-3 rounded-xl border border-border bg-card hover:bg-accent text-foreground font-semibold text-sm shadow-sm transition-all"
+      >
+        Official CISCE Papers
+      </a>
+    </div>
+
+  </div>
+</BaseLayout>

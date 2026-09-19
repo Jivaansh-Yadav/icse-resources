@@ -20,9 +20,18 @@ dist-ssr
 
 service-account.json
 
+# Astro build
+.astro
+
 # wrangler files
 .wrangler
 .dev.vars*
 !.dev.vars.example
 .env*
 !.env.example
+
+# Agents & Workflows
+.agents
+PROJECT.md
+TEST_INFRA.md
+TEST_READY.md

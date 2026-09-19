@@ -1,0 +1,186 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const quizCategories = [
+  {
+    name: "Science: Physics, Chemistry & Biology",
+    description: "Assertion-reasoning problems, formula-based calculation MCQs, chemical reaction identification, and anatomical diagram labeling quizzes.",
+    topics: ["Force & Work", "Electrolysis & Metallurgy", "Genetics & Plant Physiology", "Current Electricity"],
+  },
+  {
+    name: "Mathematics & Statistics",
+    description: "Timed multiple-choice tests focusing on speed, algebraic factoring, trigonometric identities, coordinate geometry, and commercial math.",
+    topics: ["GST & Banking", "Quadratic Equations", "Similarity & Circles", "Trigonometric Tables"],
+  },
+  {
+    name: "English & Social Studies",
+    description: "Grammar transformation drills, vocabulary tests, Julius Caesar quote analysis, Indian National Movement dates, and topography map interpretation.",
+    topics: ["Prepositions & Synthesis", "Julius Caesar Act III-V", "Civics Union Legislature", "Toposheet Grid References"],
+  },
+  {
+    name: "Computer & Commercial Applications",
+    description: "Java syntax drills, loop iteration tracing, class method predictions, commercial bookkeeping, and banking service MCQs.",
+    topics: ["Java OOP Principles", "String & Array Methods", "Functions & Overloading", "Commercial Budgeting"],
+  },
+];
+
+const examTips = [
+  {
+    title: "1. Read All Four Options Thoroughly",
+    tip: "In ICSE multiple-choice questions, distractors often differ by subtle units or signs (e.g. Joules vs. ergs, cathode vs. anode). Never select the first plausible option without eliminating the rest.",
+  },
+  {
+    title: "2. Master Assertion-Reasoning Patterns",
+    tip: "Evaluate the Assertion independently first. If true, evaluate the Reason independently. Only then verify if the Reason provides the correct causal explanation for the Assertion.",
+  },
+  {
+    title: "3. Time Allocation (Under 60 Seconds per MCQ)",
+    tip: "Section A objective questions should take no more than 15-20 minutes total during your 2-hour board exam, leaving ample time for structured descriptive answers.",
+  },
+  {
+    title: "4. Review Error Patterns",
+    tip: "Maintain an error log of questions you missed. Revisit the corresponding textbook chapters in Selina or Concise guides to reinforce underlying definitions.",
+  },
+];
+---
+
+<BaseLayout
+  title="Interactive Quizzes & Practice Tests: ICSE Class 10"
+  description="Free interactive chapter-wise quizzes, MCQ practice tests, assertion-reasoning problems, and revision drills for ICSE Class 10 board exam preparation."
+  currentPath="/quizzes"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center gap-2 text-sm text-muted-foreground" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-foreground transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-foreground font-medium">Interactive Quizzes</span>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="space-y-4 border-b border-border/40 pb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold">
+        Real-Time Examination Practice
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight">
+        ICSE Class 10 Interactive Quizzes & Practice Tests
+      </h1>
+      <p class="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed">
+        Sharpen your objective question accuracy and test-taking speed with curated chapterwise quizzes, assertion-reasoning challenges, and competency-focused assessments aligned with the latest CISCE curriculum.
+      </p>
+    </header>
+
+    <!-- Embedded Interactive Quiz Container (Live Island Platform) -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-foreground">Live Interactive Quiz Platform</h2>
+          <p class="text-xs sm:text-sm text-muted-foreground">
+            Complete chapter-wise assessments directly in the embedded interactive container below.
+          </p>
+        </div>
+        <a
+          href="https://shs-pyqp-project.vercel.app/resources"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+        >
+          Open in New Tab
+          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="21" y1="3" x2="14" y2="10"></line>
+          </svg>
+        </a>
+      </div>
+
+      <div class="quiz-container w-full rounded-2xl border border-border bg-card shadow-lg overflow-hidden flex flex-col min-h-[650px] sm:min-h-[750px]">
+        <div class="px-5 py-3 border-b border-border bg-muted/40 flex items-center justify-between text-xs text-muted-foreground">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-medium text-foreground">Interactive Quiz Engine</span>
+          </div>
+          <span>Powered by SHS PYQP Project</span>
+        </div>
+        <iframe
+          src="https://shs-pyqp-project.vercel.app/resources"
+          title="Interactive ICSE Quizzes"
+          class="w-full flex-1 min-h-[600px] sm:min-h-[700px] border-0 bg-background"
+          loading="lazy"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        ></iframe>
+      </div>
+    </section>
+
+    <!-- Quiz Subject Modules Grid -->
+    <section class="space-y-6">
+      <div class="border-b border-border/40 pb-4">
+        <h2 class="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Available Quiz Subjects & Topic Modules</h2>
+        <p class="text-sm sm:text-base text-muted-foreground mt-1">
+          Targeted revision modules designed for focused multiple-choice and competency question practice.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {quizCategories.map((cat) => (
+          <article class="rounded-xl border border-border bg-card p-6 space-y-4">
+            <h3 class="text-lg font-bold text-foreground">{cat.name}</h3>
+            <p class="text-sm text-muted-foreground leading-relaxed">
+              {cat.description}
+            </p>
+            <div>
+              <span class="text-xs font-semibold text-foreground uppercase tracking-wider block mb-2">High-Frequency Topics</span>
+              <div class="flex flex-wrap gap-2">
+                {cat.topics.map((t) => (
+                  <span class="px-2.5 py-1 rounded-md bg-accent text-accent-foreground text-xs font-medium">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- High-Scoring MCQ Exam Strategies -->
+    <section class="rounded-2xl border border-border bg-card/60 p-6 sm:p-10 space-y-6">
+      <div>
+        <h2 class="text-2xl font-bold text-foreground">Strategies for Scoring 100% in Objective Section A</h2>
+        <p class="text-sm text-muted-foreground mt-1 leading-relaxed">
+          The Council's revised question format allocates significant weight to Section A objective questions across all subjects. Follow these proven principles:
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {examTips.map((item) => (
+          <div class="space-y-2">
+            <h3 class="text-base font-semibold text-foreground">{item.title}</h3>
+            <p class="text-sm text-muted-foreground leading-relaxed">{item.tip}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Related Navigation Links -->
+    <section class="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-4">
+      <h2 class="text-xl font-bold text-foreground">Need Full Chapter Notes or Board Papers?</h2>
+      <p class="text-sm text-muted-foreground leading-relaxed">
+        Combine your interactive quiz drills with complete textbook revision notes and official board question papers:
+      </p>
+      <div class="flex flex-wrap gap-4 pt-2">
+        <a href="/" class="text-sm font-semibold text-primary hover:underline">
+          &larr; Return to Home
+        </a>
+        <a href="/study-materials" class="text-sm font-semibold text-primary hover:underline">
+          Browse Study Materials &rarr;
+        </a>
+        <a href="/cisce" class="text-sm font-semibold text-primary hover:underline">
+          Official CISCE Directory &rarr;
+        </a>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>

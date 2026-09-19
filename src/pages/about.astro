@@ -1,0 +1,103 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About ICSE Resources: Educational Mission & Story"
+  description="Learn about ICSE Resources, a dedicated free educational portal created by Jivaansh Yadav to curate over 6,500 Class 10 study materials, notes, and papers."
+  currentPath="/about"
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center gap-2 text-sm text-muted-foreground" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-foreground transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-foreground font-medium">About</span>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="space-y-4 border-b border-border/40 pb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold">
+        Open Educational Initiative
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight">
+        About ICSE Resources & Our Educational Mission
+      </h1>
+      <p class="text-base sm:text-lg text-muted-foreground leading-relaxed">
+        Empowering Class 10 ICSE students with open, curated, and high-quality educational study materials, past question papers, and official syllabus guidelines.
+      </p>
+    </header>
+
+    <!-- Main Content Articles -->
+    <div class="space-y-10 text-muted-foreground leading-relaxed">
+
+      <section class="space-y-4">
+        <h2 class="text-2xl font-bold text-foreground">Project Origin & Vision</h2>
+        <p>
+          Preparing for the <strong>ICSE Class 10 board examinations</strong> has traditionally been hindered by fragmented resources. Valuable textbook solutions, handwritten revision notes, school preliminary papers, and council evaluation reports were scattered across multiple unofficial forums, chat servers, and expired cloud drives.
+        </p>
+        <p>
+          Founded and curated by student developer <strong>Jivaansh Yadav</strong>, <strong>ICSE Resources</strong> was created to consolidate these essential materials into a single, lightning-fast, and accessible open platform. Today, the repository indexes over <strong>6,500 individual educational files</strong> spanning 11 core academic subjects.
+        </p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl font-bold text-foreground">Curriculum & Subject Coverage</h2>
+        <p>
+          Our archive provides comprehensive, syllabus-aligned resources for all major disciplines governed by the Council for the Indian School Certificate Examinations (CISCE):
+        </p>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <li class="p-3 rounded-lg border border-border bg-card">
+            <strong class="text-foreground">Sciences:</strong> Physics, Chemistry, and Biology (with diagram sheets, formula handbooks, and solved numerical problems).
+          </li>
+          <li class="p-3 rounded-lg border border-border bg-card">
+            <strong class="text-foreground">Mathematics:</strong> Commercial Mathematics, Algebra, Geometry, Trigonometry, and 100+ MCQ practice sets.
+          </li>
+          <li class="p-3 rounded-lg border border-border bg-card">
+            <strong class="text-foreground">Languages & Humanities:</strong> English Language & Literature (Julius Caesar, Treasure Chest), Hindi (Sahitya Sagar), Geography, and History & Civics.
+          </li>
+          <li class="p-3 rounded-lg border border-border bg-card">
+            <strong class="text-foreground">Vocational & Electives:</strong> Computer Applications (Java OOP programming) and Commercial Applications.
+          </li>
+        </ul>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl font-bold text-foreground">Community & Collaboration</h2>
+        <p>
+          This repository is continuously improved through generous contributions from the student and educator communities on the <strong>r/ICSE</strong> subreddit and the <strong>ICSEcord</strong> Discord server. From verified preliminary exam papers of prestigious ICSE schools across India to concise revision sheets created by subject toppers, community collaboration remains at the heart of our mission.
+        </p>
+      </section>
+
+      <section class="p-6 rounded-2xl border border-border bg-card space-y-3">
+        <h2 class="text-xl font-bold text-foreground">Non-Commercial Educational Disclaimer</h2>
+        <p class="text-sm">
+          <strong>ICSE Resources</strong> is a purely non-profit, non-commercial educational reference initiative. This site is <strong>not affiliated with, endorsed by, or sponsored by</strong> the Council for the Indian School Certificate Examinations (CISCE). All trademarks, examination titles, and syllabi remain the intellectual property of CISCE. All study notes, sample questions, and textbook solutions are hosted or linked solely for fair-use educational guidance and personal academic study.
+        </p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-2xl font-bold text-foreground">Open Source & Modern Architecture</h2>
+        <p>
+          The project code is open source and maintained on <a href="https://github.com/Jivaansh-Yadav/class-10-icse" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-semibold">GitHub</a>. Migrated to modern Astro SSG with Cloudflare Pages edge delivery, the application guarantees zero-latency browsing, instant full-text search, and full accessibility across mobile and desktop devices.
+        </p>
+      </section>
+
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="pt-6 border-t border-border/40 flex flex-wrap gap-4">
+      <a href="/" class="text-sm font-semibold text-primary hover:underline">
+        &larr; Back to Home
+      </a>
+      <a href="/study-materials" class="text-sm font-semibold text-primary hover:underline">
+        Explore Study Materials &rarr;
+      </a>
+      <a href="/contact" class="text-sm font-semibold text-primary hover:underline">
+        Contact Developer &rarr;
+      </a>
+    </div>
+
+  </div>
+</BaseLayout>
