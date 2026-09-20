@@ -1,382 +1,97 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { getSubjectSummary, getStudyMaterialsSync, getCisceResourcesSync } from "../lib/data";
-
-const subjects = getSubjectSummary();
-const studyMaterials = getStudyMaterialsSync();
-const cisceData = getCisceResourcesSync();
-
-const cisceCategories = [
-  {
-    name: "Syllabus (2024-2027)",
-    description: "Official CISCE subject-wise curriculum regulations and scope of syllabus for Class 10 board examinations.",
-    icon: "BookOpen",
-    href: "/cisce#syllabus",
-  },
-  {
-    name: "Specimen Question Papers (Specimen QPs)",
-    description: "Official council specimen papers for 2024, 2025, and 2026 featuring the latest competency-based question format.",
-    icon: "FileCheck",
-    href: "/cisce#specimen-qps",
-  },
-  {
-    name: "Previous Year Questions (PYQs)",
-    description: "Authentic board question papers from 2017 to 2023 with question patterns and marking schemes.",
-    icon: "History",
-    href: "/cisce#pyqs",
-  },
-  {
-    name: "Analysis of Pupil Performance",
-    description: "Detailed examiner feedback, evaluation metrics, common student errors, and scoring recommendations (2013-2025).",
-    icon: "BarChart3",
-    href: "/cisce#pupil-performance",
-  },
-  {
-    name: "Competency-Focused Questions (CFQs)",
-    description: "Official practice problems designed to test higher-order thinking, analytical skills, and real-world application.",
-    icon: "HelpCircle",
-    href: "/cisce#cfqs",
-  },
-  {
-    name: "Official Regulations & Time Table",
-    description: "Guidelines for comprehensive examination support measures, timetable schedules, and candidate conduct rules.",
-    icon: "ShieldAlert",
-    href: "/cisce#regulations",
-  },
-];
-
-const faqs = [
-  {
-    question: "Where can I download official ICSE Class 10 Specimen Question Papers?",
-    answer: "You can download official CISCE specimen papers for all subjects directly from our CISCE Directory section. We maintain archives for the 2024, 2025, and 2026 board exam patterns.",
-  },
-  {
-    question: "What subjects are covered in ICSE Resources?",
-    answer: "Our repository provides comprehensive notes, sample papers, and textbook solutions for all 11 core ICSE Class 10 subjects: Biology, Chemistry, Physics, Maths, English (Language & Literature), Geography, Hindi, History & Civics, Commercial Applications, Computer Applications, and PYQ Prelims.",
-  },
-  {
-    question: "How do Previous Year Question Papers (PYQs) help in board preparation?",
-    answer: "Practicing PYQs helps students familiarize themselves with question framing, time management, and repeated core concepts. Combining PYQs with the Analysis of Pupil Performance reveals exactly where students tend to lose marks.",
-  },
-  {
-    question: "Are all study materials and textbooks free on this site?",
-    answer: "Yes, 100% of the educational resources hosted or indexed on ICSE Resources are free for personal, non-commercial academic study. No login, sign-up, or subscription is required.",
-  },
-  {
-    question: "How can I test my knowledge with interactive quizzes?",
-    answer: "Visit our Quizzes section to access chapter-wise MCQ tests, assertion-reasoning problems, and timed mock assessments designed specifically according to the ICSE Class 10 examination standard.",
-  },
-];
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeToggle from '../components/islands/ThemeToggle';
+const classes = [12, 11, 10, 9];
 ---
 
-<BaseLayout
-  title="ICSE Resources - Class 10 Free Study Materials & Specimen Papers"
-  description="Your one-stop open educational hub for ICSE Class 10 study materials, official CISCE syllabi, specimen papers, chapter revision notes, and prelim exam papers."
-  currentPath="/"
->
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+<BaseLayout title="ICSE Resources — Choose your class" description="Choose your class to find study notes, textbook solutions and practice papers. Class 10 resources are available; Classes 9, 11 and 12 are coming soon." currentPath="/" selectionOnly>
+  <div class="class-entry">
+    <header class="entry-header">
+      <a class="entry-brand" href="/" aria-label="ICSE Resources home">
+        <svg viewBox="0 0 28 28" fill="none" aria-hidden="true"><path d="M3 5h7a4 4 0 0 1 4 4v15a4 4 0 0 0-4-4H3V5Zm22 0h-7a4 4 0 0 0-4 4v15a4 4 0 0 1 4-4h7V5Z" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span>ICSE<span class="brand-secondary">Resources</span></span>
+      </a>
+      <div class="entry-header-end"><span>THE STUDENT LIBRARY</span><ThemeToggle client:load /></div>
+    </header>
 
-    <!-- ==================== HERO SECTION ==================== -->
-    <section class="text-center space-y-6 pt-4 sm:pt-8 animate-fade-in">
-      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold tracking-wide">
-        <span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-        Curated for ICSE Class 10 Board Examinations
+    <section class="entry-content" aria-labelledby="class-title">
+      <div class="entry-heading">
+        <div><p class="entry-eyebrow"><span></span> A LITTLE DIRECTION. A LOT TO DISCOVER.</p><h1 id="class-title">Your class.<br /><span>Your starting point.</span></h1></div>
+        <p class="entry-description">Choose your class to find the notes,<br class="desktop-break" /> guides, and practice papers you need.</p>
       </div>
-
-      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tight max-w-4xl mx-auto leading-tight sm:leading-tight">
-        ICSE Resources - Class 10 Free Study Materials & Specimen Papers
-      </h1>
-
-      <p class="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-        Your comprehensive open-source educational portal. Explore over 6,500 curated revision notes, specimen question papers, textbook solutions, and school prelim papers.
-      </p>
-
-      <!-- Quick Search Bar Trigger -->
-      <div class="max-w-xl mx-auto pt-2">
-        <button
-          type="button"
-          onclick="window.dispatchEvent(new CustomEvent('app:open-modal', { detail: { modal: 'search' } }))"
-          class="w-full flex items-center justify-between px-5 py-3.5 rounded-2xl border border-border bg-card/80 shadow-md hover:shadow-lg hover:border-primary/50 text-muted-foreground transition-all cursor-pointer group"
-          aria-label="Quick search through 6,500+ ICSE resources"
-        >
-          <div class="flex items-center gap-3">
-            <svg class="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <span class="text-sm font-medium">Search subjects, notes, sample papers...</span>
-          </div>
-          <kbd class="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-xs font-mono rounded-lg border border-border bg-muted text-muted-foreground shadow-sm">
-            Ctrl+K
-          </kbd>
-        </button>
-      </div>
-
-      <!-- Quick Action Navigation Links -->
-      <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
-        <a
-          href="/study-materials"
-          class="px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium text-sm shadow-sm hover:opacity-90 active:scale-95 transition-all"
-        >
-          Explore Study Materials
-        </a>
-        <a
-          href="/cisce"
-          class="px-5 py-2.5 rounded-xl border border-border bg-card hover:bg-accent text-foreground font-medium text-sm shadow-sm hover:scale-[1.02] active:scale-95 transition-all"
-        >
-          Official CISCE Portal
-        </a>
-        <a
-          href="/quizzes"
-          class="px-5 py-2.5 rounded-xl border border-border bg-card hover:bg-accent text-foreground font-medium text-sm shadow-sm hover:scale-[1.02] active:scale-95 transition-all"
-        >
-          Practice Quizzes
-        </a>
-      </div>
+      <nav class="entry-classes" aria-label="Choose your class">
+        {classes.map(grade => <a href={`/study-materials?class=${grade}`} data-class-link={grade} class:list={['entry-class', { 'entry-class-ready': grade === 10 }]}>
+          <div class="entry-class-top"><span>CLASS</span><span class="entry-availability">{grade === 10 ? 'Available now' : 'Coming soon'}</span></div>
+          <span class="entry-number">{grade}</span>
+          <div class="entry-class-bottom"><span>{grade === 10 ? 'Explore resources' : 'Take a look ahead'}</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        </a>)}
+      </nav>
+      <div class="entry-note"><span class="entry-note-line"></span><p>Class 10 is ready to explore. More classes are on the way.</p></div>
     </section>
 
-    <!-- ==================== MAIN 3 GATEWAY CARDS ==================== -->
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Card 1: CISCE Resources -->
-      <div class="group relative rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
-            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-            </svg>
-          </div>
-          <h2 class="text-xl sm:text-2xl font-bold text-foreground">CISCE Resources</h2>
-          <p class="text-sm text-muted-foreground leading-relaxed">
-            Access official board regulations, syllabus documents for 2024-2027, Specimen Question Papers (Specimen QPs), Previous Year Questions (PYQs), and comprehensive Analysis of Pupil Performance.
-          </p>
-        </div>
-        <div class="pt-6">
-          <a
-            href="/cisce"
-            class="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:translate-x-1 transition-transform"
-          >
-            Explore CISCE Resources
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14"></path>
-              <path d="m12 5 7 7-7 7"></path>
-            </svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- Card 2: Study Materials -->
-      <div class="group relative rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
-            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-              <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-            </svg>
-          </div>
-          <h2 class="text-xl sm:text-2xl font-bold text-foreground">Study Materials</h2>
-          <p class="text-sm text-muted-foreground leading-relaxed">
-            Over 6,200 curated revision guides, chapter formula sheets, Selina solutions, Oswal question banks, and school prelim papers across all 11 core Class 10 subjects.
-          </p>
-        </div>
-        <div class="pt-6">
-          <a
-            href="/study-materials"
-            class="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:translate-x-1 transition-transform"
-          >
-            Browse Study Materials
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14"></path>
-              <path d="m12 5 7 7-7 7"></path>
-            </svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- Card 3: Interactive Quizzes -->
-      <div class="group relative rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
-        <div class="space-y-4">
-          <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
-            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04Z"></path>
-              <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04Z"></path>
-            </svg>
-          </div>
-          <h2 class="text-xl sm:text-2xl font-bold text-foreground">Interactive Quizzes</h2>
-          <p class="text-sm text-muted-foreground leading-relaxed">
-            Test your exam readiness with chapter-wise multiple choice questions, competency-focused reasoning problems, and timed interactive quizzes for fast revision.
-          </p>
-        </div>
-        <div class="pt-6">
-          <a
-            href="/quizzes"
-            class="inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:translate-x-1 transition-transform"
-          >
-            Start Practice Quizzes
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14"></path>
-              <path d="m12 5 7 7-7 7"></path>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== SUBJECT DIRECTORY GRID (11 SUBJECTS) ==================== -->
-    <section class="space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border/40 pb-4">
-        <div>
-          <h2 class="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Class 10 Core Subject Directory</h2>
-          <p class="text-sm sm:text-base text-muted-foreground mt-1">
-            Browse comprehensive syllabus notes, formula sheets, and solved papers organized across all 11 ICSE subjects.
-          </p>
-        </div>
-        <a href="/study-materials" class="text-sm font-semibold text-primary hover:underline flex items-center gap-1">
-          View all subjects & papers &rarr;
-        </a>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {subjects.map((sub) => (
-          <article class="group rounded-xl border border-border bg-card p-5 hover:border-primary/40 hover:shadow-md transition-all flex flex-col justify-between">
-            <div class="space-y-3">
-              <div class="flex items-center justify-between">
-                <div class="p-2.5 rounded-lg bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider">
-                  {sub.name}
-                </div>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-                  {sub.fileCount.toLocaleString()} items
-                </span>
-              </div>
-              <h3 class="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
-                <a href={sub.path}>
-                  {sub.name}
-                </a>
-              </h3>
-              <p class="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                {sub.description}
-              </p>
-            </div>
-            <div class="pt-4 mt-auto border-t border-border/30 flex items-center justify-between">
-              <a
-                href={sub.path}
-                class="text-xs sm:text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
-              >
-                Access {sub.name} notes &rarr;
-              </a>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-
-    <!-- ==================== OFFICIAL CISCE RESOURCES HIGHLIGHTS ==================== -->
-    <section class="space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border/40 pb-4">
-        <div>
-          <h2 class="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Official CISCE Resources</h2>
-          <p class="text-sm sm:text-base text-muted-foreground mt-1">
-            Verified council documents, previous examination question papers, and examiner analysis reports.
-          </p>
-        </div>
-        <a href="/cisce" class="text-sm font-semibold text-primary hover:underline flex items-center gap-1">
-          Explore full CISCE directory &rarr;
-        </a>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cisceCategories.map((cat) => (
-          <div class="rounded-xl border border-border bg-card p-5 hover:border-primary/40 hover:shadow-md transition-all flex flex-col justify-between">
-            <div class="space-y-2.5">
-              <h3 class="text-base font-bold text-foreground">
-                <a href={cat.href} class="hover:text-primary transition-colors">
-                  {cat.name}
-                </a>
-              </h3>
-              <p class="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                {cat.description}
-              </p>
-            </div>
-            <div class="pt-4 mt-auto">
-              <a href={cat.href} class="text-xs font-semibold text-primary hover:underline">
-                View category documents &rarr;
-              </a>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- ==================== EDUCATIONAL ARTICLE & CURRICULUM OVERVIEW ==================== -->
-    <section class="rounded-2xl border border-border bg-card/60 p-6 sm:p-10 space-y-6">
-      <div class="space-y-2">
-        <h2 class="text-2xl font-bold text-foreground">Mastering the ICSE Class 10 Board Examinations</h2>
-        <p class="text-sm text-muted-foreground leading-relaxed">
-          Guidance and proven strategies for achieving academic excellence in the Indian Certificate of Secondary Education examinations.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-muted-foreground leading-relaxed">
-        <div class="space-y-4">
-          <h3 class="text-base font-semibold text-foreground">1. Structured Syllabus-Aligned Revision</h3>
-          <p>
-            The ICSE Class 10 syllabus emphasizes conceptual clarity and precise application. For science disciplines like <strong>Physics</strong>, <strong>Chemistry</strong>, and <strong>Biology</strong>, students are advised to maintain concise formula sheets and labeled diagram sheets. In <strong>Mathematics</strong>, consistent practice with Commercial Mathematics, Algebra, and Geometry builds speed and calculation accuracy.
-          </p>
-          <h3 class="text-base font-semibold text-foreground">2. Analyzing Previous Year Papers (PYQs)</h3>
-          <p>
-            Reviewing at least 5 to 7 years of Previous Year Question Papers enables candidates to identify recurrent question themes, standard mark weightages, and the exact phraseology required by CISCE evaluators. Our repository contains authentic board question papers from 2017 to 2023.
-          </p>
-        </div>
-
-        <div class="space-y-4">
-          <h3 class="text-base font-semibold text-foreground">3. Learning from Examiner Feedback</h3>
-          <p>
-            The Council publishes an annual <em>Analysis of Pupil Performance</em> detailing common misconceptions and pitfalls observed during paper evaluation. Studying these examiner reports equips students with actionable insights on avoiding ambiguous answers, calculation errors, and improper units.
-          </p>
-          <h3 class="text-base font-semibold text-foreground">4. School Prelim Practice</h3>
-          <p>
-            Top ICSE schools set rigorous preliminary examination papers that challenge students beyond standard textbook questions. Our library contains more than 5,500 prelim exam papers spanning schools across Mumbai, Kolkata, Bengaluru, and New Delhi.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== FREQUENTLY ASKED QUESTIONS (FAQ) ==================== -->
-    <section class="space-y-6">
-      <div class="border-b border-border/40 pb-4">
-        <h2 class="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">Frequently Asked Questions</h2>
-        <p class="text-sm sm:text-base text-muted-foreground mt-1">
-          Common queries regarding ICSE Class 10 preparation, study materials, and examination resources.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {faqs.map((faq) => (
-          <article class="rounded-xl border border-border bg-card p-6 space-y-2">
-            <h3 class="text-base font-semibold text-foreground">
-              {faq.question}
-            </h3>
-            <p class="text-sm text-muted-foreground leading-relaxed">
-              {faq.answer}
-            </p>
-          </article>
-        ))}
-      </div>
-    </section>
-
-    <!-- Modal Coordinator Element for Client Islands & Testing -->
-    <div data-modal="app-modals" id="modal-coordinator" class="hidden">
-      <!-- Holds modal trigger integration metadata -->
-      <span data-upi-qr="/upi_qr.png"></span>
-      <span data-repo="https://github.com/Jivaansh-Yadav/class-10-icse"></span>
-    </div>
-
-    <!-- Synchronous theme query verification -->
-    <script is:inline>
-      if (typeof localStorage !== "undefined") {
-        const _activeTheme = localStorage.getItem('theme');
-      }
-    </script>
-
+    <footer class="entry-footer"><span>Free to learn. Open to everyone.</span><span>CHOOSE A CLASS <span aria-hidden="true">→</span> FIND YOUR SUBJECT <span aria-hidden="true">→</span> START LEARNING</span></footer>
   </div>
 </BaseLayout>
+
+<style>
+  .class-entry { max-width: 1440px; min-height: 100svh; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 5rem); display: flex; flex-direction: column; }
+  .entry-header { height: 104px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid hsl(var(--border) / .65); }
+  .entry-brand { display: flex; align-items: center; gap: .8rem; font-weight: 700; font-size: 1rem; letter-spacing: -.035em; }
+  .entry-brand > svg { width: 28px; height: 28px; }
+  .brand-secondary { margin-left: .35rem; font-weight: 400; }
+  .entry-header-end { display: flex; gap: 1.7rem; align-items: center; }
+  .entry-header-end > span { font-size: .6rem; letter-spacing: .16em; color: hsl(var(--muted-foreground)); }
+  .entry-content { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 4rem 0; }
+  .entry-heading { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 3rem; }
+  .entry-eyebrow { display: flex; align-items: center; gap: .65rem; font-size: .6rem; font-weight: 600; letter-spacing: .14em; margin-bottom: 1.55rem; color: hsl(var(--muted-foreground)); }
+  .entry-eyebrow > span { width: 5px; height: 5px; background: hsl(var(--foreground)); }
+  h1 { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; font-size: clamp(2.6rem, 5.6vw, 5.1rem); font-weight: 600; letter-spacing: -.065em; line-height: 1.06; }
+  h1 > span { color: hsl(var(--muted-foreground)); }
+  .entry-description { padding-bottom: .35rem; font-size: .85rem; line-height: 1.8; color: hsl(var(--muted-foreground)); }
+  .entry-classes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+  .entry-class { min-height: 264px; display: flex; flex-direction: column; justify-content: space-between; padding: 1.35rem; background: hsl(var(--background) / .65); border: 1px solid hsl(var(--foreground) / .2); border-radius: 4px; transition: border-color 300ms ease, background-color 300ms ease, transform 300ms ease; }
+  .entry-class:hover { border-color: hsl(var(--foreground) / .65); background: hsl(var(--background) / .88); transform: translateY(-4px); }
+  .entry-class-top { display: flex; align-items: center; justify-content: space-between; gap: .5rem; font-size: .6rem; letter-spacing: .14em; }
+  .entry-availability { font-size: .61rem; letter-spacing: 0; color: hsl(var(--muted-foreground)); }
+  .entry-number { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; font-size: clamp(4rem, 7vw, 6.5rem); line-height: 1; letter-spacing: -.085em; font-weight: 400; margin: 1.45rem 0 1.55rem; }
+  .entry-class-bottom { display: flex; align-items: center; justify-content: space-between; gap: .5rem; font-size: .72rem; padding-top: 1rem; border-top: 1px solid hsl(var(--foreground) / .12); }
+  .entry-class-bottom svg { width: 19px; height: 19px; transition: transform 300ms ease; }
+  .entry-class:hover .entry-class-bottom svg { transform: translateX(3px); }
+  .entry-class-ready, .entry-class-ready:hover { background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: hsl(var(--foreground)); }
+  .entry-class-ready .entry-availability { color: hsl(var(--background) / .75); }
+  .entry-class-ready .entry-class-bottom { border-color: hsl(var(--background) / .25); }
+  .entry-note { display: flex; align-items: center; gap: .7rem; margin-top: 1.25rem; font-size: .7rem; color: hsl(var(--muted-foreground)); }
+  .entry-note-line { width: 20px; height: 1px; background: hsl(var(--muted-foreground)); flex-shrink: 0; }
+  .entry-footer { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; min-height: 80px; border-top: 1px solid hsl(var(--border) / .65); color: hsl(var(--muted-foreground)); font-size: .68rem; }
+  .entry-footer > span:last-child { font-size: .52rem; letter-spacing: .1em; }
+  .entry-footer > span:last-child > span { margin: 0 .55rem; }
+  .class-entry a:focus-visible { outline: 2px solid hsl(var(--foreground)); outline-offset: 5px; }
+  @media (max-width: 850px) {
+    .entry-header { height: 80px; }
+    .entry-heading { align-items: start; flex-direction: column; gap: 1.1rem; margin-bottom: 2rem; }
+    .entry-classes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .entry-class { min-height: 205px; }
+    .entry-number { font-size: 4.4rem; margin: .8rem 0 1rem; }
+    .desktop-break { display: none; }
+    .entry-content { padding: 2.5rem 0; }
+    .entry-footer > span:last-child { display: none; }
+  }
+  @media (max-width: 480px) {
+    .entry-header { height: 72px; }
+    .entry-header-end > span { display: none; }
+    .entry-eyebrow { font-size: .5rem; letter-spacing: .1em; margin-bottom: 1.1rem; }
+    .entry-heading { gap: 1rem; margin-bottom: 1.65rem; }
+    h1 { font-size: 2.65rem; }
+    .entry-description { font-size: .78rem; }
+    .entry-classes { gap: .7rem; }
+    .entry-class { min-height: 183px; padding: .95rem; }
+    .entry-class-top { font-size: .52rem; letter-spacing: .08em; }
+    .entry-availability { font-size: .53rem; }
+    .entry-number { font-size: 3.8rem; }
+    .entry-class-bottom { font-size: .62rem; padding-top: .7rem; }
+    .entry-class-bottom svg { width: 16px; height: 16px; }
+    .entry-note { font-size: .63rem; align-items: baseline; line-height: 1.7; }
+    .entry-footer { min-height: 60px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .class-entry * { transition: none !important; } }
+</style>

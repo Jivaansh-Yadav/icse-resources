@@ -76,7 +76,7 @@ describe('Tier 3: Cross-Feature - Combination 3: Data Baking + Static Route Navi
   });
 
   it('should bake study materials directly without requiring runtime client API fetch on initial paint', () => {
-    const html = readHtmlFile('/study-materials');
+    const html = readHtmlFile('/study-materials').replace(/&amp;/g, '&');
     // Verify subject names from JSON are baked into static HTML
     const subjects = studyData.children.filter(c => c.type === 'folder').map(c => c.name);
     for (const sub of subjects.slice(0, 8)) {

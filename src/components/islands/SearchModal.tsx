@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from "react";
 import { Search, FileText, Eye, Download, X, Loader2 } from "lucide-react";
 import Fuse, { type FuseResult, type FuseResultMatch } from "fuse.js";
+
+const useDialogEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export interface SearchItem {
   name: string;
@@ -29,29 +31,41 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const searchDialogRef = useRef<HTMLDivElement>(null);
+  const previewDialogRef = useRef<HTMLDivElement>(null);
+  const closePreviewRef = useRef<HTMLButtonElement>(null);
   const hasLoadedRef = useRef(false);
+  const hasAttemptedRef = useRef(false);
+  const requestInFlightRef = useRef(false);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
-  // Lazy load search index when modal opens or on idle
-  useEffect(() => {
-    if ((open || !hasLoadedRef.current) && allItems.length === 0 && !isLoadingIndex) {
+  // A failed request stays paused until the student explicitly retries.
+  const loadIndex = useCallback(async () => {
+    if (hasLoadedRef.current || requestInFlightRef.current) return;
+    hasAttemptedRef.current = true;
+    requestInFlightRef.current = true;
+    setIsLoadingIndex(true);
+    setLoadError(null);
+    try {
+      const response = await fetch("/data/search-index.json");
+      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+      const data: SearchItem[] = await response.json();
+      if (!Array.isArray(data)) throw new Error("Invalid search index");
       hasLoadedRef.current = true;
-      setIsLoadingIndex(true);
-      fetch("/data/search-index.json")
-        .then((r) => {
-          if (!r.ok) throw new Error(`HTTP error ${r.status}`);
-          return r.json();
-        })
-        .then((data: SearchItem[]) => {
-          setAllItems(data);
-          setIsLoadingIndex(false);
-        })
-        .catch((err) => {
-          console.error("Failed to load search-index.json:", err);
-          setLoadError("Unable to load search index. Please try again.");
-          setIsLoadingIndex(false);
-        });
+      setAllItems(data);
+    } catch (err) {
+      console.error("Failed to load search-index.json:", err);
+      setLoadError("Unable to load search index. Please try again.");
+    } finally {
+      requestInFlightRef.current = false;
+      setIsLoadingIndex(false);
     }
-  }, [open, allItems.length, isLoadingIndex]);
+  }, []);
+
+  useEffect(() => {
+    if (open && !hasAttemptedRef.current) void loadIndex();
+  }, [open, loadIndex]);
 
   // Memoized Fuse.js search engine
   const fuse = useMemo(() => {
@@ -78,19 +92,68 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
     return () => clearTimeout(timer);
   }, [query, fuse]);
 
-  // Auto-focus input and reset state when modal opens
-  useEffect(() => {
-    if (open) {
-      setQuery("");
-      setResults([]);
-      setSelectedIndex(0);
-      setPreviewFile(null);
-      const timer = setTimeout(() => inputRef.current?.focus(), 50);
-      return () => clearTimeout(timer);
-    }
+  // Remember the opener once, and return focus when the entire search closes.
+  useDialogEffect(() => {
+    if (!open) return;
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setQuery("");
+    setResults([]);
+    setSelectedIndex(0);
+    setPreviewFile(null);
+    return () => {
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+    };
   }, [open]);
 
-  // Keyboard navigation
+  // Attach before paint so Escape and focus work immediately after opening.
+  useDialogEffect(() => {
+    if (!open) return;
+    const dialog = previewFile ? previewDialogRef.current : searchDialogRef.current;
+    if (!dialog) return;
+    const initialFocus = previewFile ? closePreviewRef.current : inputRef.current;
+    initialFocus?.focus({ preventScroll: true });
+
+    const focusableElements = () => Array.from(dialog.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
+    )).filter(element => element.tabIndex >= 0 && element.getClientRects().length > 0);
+
+    const handleDialogKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        if (previewFile) setPreviewFile(null);
+        else onCloseRef.current();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const elements = focusableElements();
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+      if (!first || !last) {
+        event.preventDefault();
+        dialog.focus();
+      } else if (!dialog.contains(document.activeElement) || (event.shiftKey && document.activeElement === first)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    const keepFocusInDialog = (event: FocusEvent) => {
+      if (event.target instanceof Node && !dialog.contains(event.target)) {
+        (initialFocus || dialog).focus({ preventScroll: true });
+      }
+    };
+    document.addEventListener("keydown", handleDialogKeyDown, true);
+    document.addEventListener("focusin", keepFocusInDialog, true);
+    return () => {
+      document.removeEventListener("keydown", handleDialogKeyDown, true);
+      document.removeEventListener("focusin", keepFocusInDialog, true);
+    };
+  }, [open, previewFile]);
+
+  // Result navigation only belongs to the search input; result buttons retain Enter.
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === "ArrowDown") {
@@ -102,16 +165,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
       } else if (e.key === "Enter" && results[selectedIndex]) {
         e.preventDefault();
         setPreviewFile(results[selectedIndex].item);
-      } else if (e.key === "Escape") {
-        e.preventDefault();
-        if (previewFile) {
-          setPreviewFile(null);
-        } else {
-          onClose();
-        }
       }
     },
-    [results, selectedIndex, previewFile, onClose]
+    [results, selectedIndex]
   );
 
   // Auto-scroll selected item into view
@@ -142,8 +198,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
       {/* Main Search Panel */}
       {!previewFile && (
         <div
+          ref={searchDialogRef}
           className="fixed z-[110] top-[12%] sm:top-[15%] left-1/2 -translate-x-1/2 w-[94%] max-w-xl animate-scale-in"
-          onKeyDown={handleKeyDown}
+          tabIndex={-1}
           role="dialog"
           aria-modal="true"
           aria-label="Search files"
@@ -161,6 +218,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder={isLoadingIndex ? "Loading index..." : "Search files (e.g. Physics, 2024, Specimen)..."}
                 className="flex-1 bg-transparent text-foreground text-base outline-none placeholder:text-muted-foreground"
                 aria-label="Search study files"
@@ -180,14 +238,17 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
 
             {/* Error state */}
             {loadError && (
-              <div className="p-4 text-center text-sm text-destructive bg-destructive/10">
-                {loadError}
+              <div className="p-4 text-center text-sm text-destructive bg-destructive/10" role="alert">
+                <p>{loadError}</p>
+                <button type="button" onClick={() => void loadIndex()} className="mt-2 rounded-lg border border-current px-3 py-1.5 font-medium hover:bg-destructive/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+                  Retry search
+                </button>
               </div>
             )}
 
             {/* Results List */}
             <div ref={listRef} className="max-h-[50vh] overflow-y-auto">
-              {results.length === 0 && query.trim() && !isLoadingIndex && (
+              {results.length === 0 && query.trim() && !isLoadingIndex && !loadError && (
                 <div className="text-center text-muted-foreground text-sm py-10">
                   <p>No files found matching "{query}"</p>
                   <p className="text-xs mt-1">Try a different keyword or subject name</p>
@@ -269,7 +330,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
       {/* PDF / File Preview Modal */}
       {previewFile && (
         <div
+          ref={previewDialogRef}
           className="fixed inset-[3%] z-[120] flex flex-col rounded-2xl border border-border bg-background shadow-2xl overflow-hidden animate-scale-in"
+          tabIndex={-1}
           role="dialog"
           aria-modal="true"
           aria-label={previewFile.name}
@@ -290,6 +353,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
               <Download className="h-4 w-4 text-primary" />
             </a>
             <button
+              ref={closePreviewRef}
               type="button"
               onClick={() => setPreviewFile(null)}
               className="p-2 rounded-lg hover:bg-accent transition-colors active:scale-95"

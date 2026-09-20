@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { JSDOM } from 'jsdom';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -202,12 +203,23 @@ test('Header renders site title and logo linking to /', () => {
   assert.match(headerContent, /<a[^>]+href="\/"[^>]*>[\s\S]*?ICSE[\s\S]*?Resources[\s\S]*?<\/a>/i);
 });
 
-test('Header contains static navigation links to core sections', () => {
-  assert.match(headerContent, /href="\/study-materials"/);
-  assert.match(headerContent, /href="\/cisce"/);
-  assert.match(headerContent, /href="\/quizzes"/);
-  assert.match(headerContent, /href="\/about"/);
-  assert.match(headerContent, /href="\/contact"/);
+test('Built desktop and mobile navigation link to every core section', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'dist/index.html'), 'utf8');
+  const dom = new JSDOM(html);
+  try {
+    const header = dom.window.document.querySelector('header');
+    assert.ok(header, 'The built page must render a header');
+    for (const label of ['Main navigation', 'Mobile navigation']) {
+      const nav = header.querySelector(`nav[aria-label="${label}"]`);
+      assert.ok(nav, `${label} must be labelled and present`);
+      const hrefs = new Set([...nav.querySelectorAll('a[href]')].map(link => link.getAttribute('href')));
+      for (const href of ['/study-materials', '/cisce', '/quizzes', '/about', '/contact']) {
+        assert.ok(hrefs.has(href), `${label} must provide a link to ${href}`);
+      }
+    }
+  } finally {
+    dom.window.close();
+  }
 });
 
 test('Header includes Search trigger button with Ctrl+K badge dispatching app:open-modal', () => {
@@ -216,9 +228,25 @@ test('Header includes Search trigger button with Ctrl+K badge dispatching app:op
   assert.match(headerContent, /Ctrl\+K/);
 });
 
-test('Header registers global Ctrl+K keyboard shortcut', () => {
-  assert.match(headerContent, /(ctrlKey|metaKey)[\s\S]*?(k|K)/);
-  assert.match(headerContent, /dispatchEvent\(new\s+CustomEvent\(['"]app:open-modal['"]/);
+test('Shared AppModals handles Ctrl+K and Cmd+K without a duplicate header shortcut', () => {
+  const modalsContent = fs.readFileSync(path.join(ROOT, 'src/components/islands/AppModals.tsx'), 'utf8');
+  assert.match(modalsContent, /e\.ctrlKey\s*\|\|\s*e\.metaKey/);
+  assert.match(modalsContent, /e\.key\.toLowerCase\(\)\s*===\s*['"]k['"]/);
+  assert.match(modalsContent, /e\.preventDefault\(\)/);
+  assert.match(modalsContent, /window\.addEventListener\(['"]keydown['"],\s*handleKeyDown\)/);
+  assert.match(modalsContent, /window\.removeEventListener\(['"]keydown['"],\s*handleKeyDown\)/);
+  assert.doesNotMatch(headerContent, /\.(ctrlKey|metaKey)\b/, 'Header must not register a second search shortcut');
+  assert.match(layoutContent, /<AppModals\s+client:load\s*\/>/, 'Shared dialogs must hydrate on every page');
+
+  for (const page of ['index.html', 'study-materials/index.html', 'cisce/index.html', 'quizzes/index.html', 'about/index.html', 'contact/index.html']) {
+    const html = fs.readFileSync(path.join(ROOT, 'dist', page), 'utf8');
+    const dom = new JSDOM(html);
+    try {
+      assert.equal(dom.window.document.querySelectorAll('#app-modals-root').length, 1, `${page} must mount the shared dialogs exactly once`);
+    } finally {
+      dom.window.close();
+    }
+  }
 });
 
 test('Header includes Donate, Info, Discord, Reddit, and GitHub action triggers', () => {

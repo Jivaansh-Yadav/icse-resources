@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getStudyMaterialsSync, getSubjectSummary } from '../../lib/data';
+import { collectLibraryFiles, getLibraryCategories, type LibrarySubject } from '../../lib/resource-library';
+
+export const prerender = true;
+
+const materials = getStudyMaterialsSync();
+const subjects: LibrarySubject[] = getSubjectSummary(materials).map(subject => {
+  const folder = materials.children?.find(child => child.type === 'folder' && child.name === subject.name);
+  const categories = folder ? getLibraryCategories(folder) : [];
+  return {
+    name: subject.name,
+    slug: subject.path.split('#')[1],
+    description: subject.description,
+    categories,
+    count: categories.reduce((sum, category) => sum + category.count, 0),
+  };
+});
+const featured = (materials.children || []).filter(child => child.type === 'file').flatMap(child => collectLibraryFiles(child));
+if (featured.length) subjects.push({
+  name: 'Featured books',
+  slug: 'featured',
+  description: 'Question banks and handbooks covering multiple Class 10 subjects.',
+  categories: [{ name: 'Question banks & handbooks', files: featured, count: featured.length }],
+  count: featured.length,
+});
+const totalCount = subjects.reduce((sum, subject) => sum + subject.count, 0);
+---
+
+<BaseLayout
+  title="All Class 10 study materials | ICSE Resources"
+  description="The complete Class 10 resource catalogue. Browse every subject, folder and file without JavaScript."
+  currentPath="/study-materials/all"
+>
+  <div id="top" class="catalogue max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+    <a href="/study-materials" class="back-link">&larr; Back to study materials</a>
+    <header class="catalogue-heading">
+      <p class="eyebrow">Complete resource catalogue</p>
+      <h1>All Class 10 study materials</h1>
+      <p>{totalCount.toLocaleString()} resources, organised by subject and category. All resources on this page are for Class 10.</p>
+      <p>Open a subject, then a category to find your file. This catalogue works without JavaScript. Files open in Google Drive in a new tab.</p>
+    </header>
+
+    <nav aria-label="Jump to a subject" class="subject-links">
+      {subjects.map(subject => <a href={`#${subject.slug}`}>{subject.name}</a>)}
+    </nav>
+
+    <div class="subject-list">
+      {subjects.map(subject => (
+        <details id={subject.slug} class="subject">
+          <summary>
+            <span class="subject-name">{subject.name}</span>
+            <span class="count">{subject.count.toLocaleString()} resources</span>
+          </summary>
+          <div class="subject-content">
+            <p class="subject-description">{subject.description}</p>
+            {subject.categories.map(category => (
+              <details class="category">
+                <summary>
+                  <span>{category.name}</span>
+                  <span class="count">{category.count.toLocaleString()} files</span>
+                </summary>
+                <ul class="file-list">
+                  {category.files.map(file => (
+                    <li>
+                      <a href={`https://drive.google.com/file/d/${encodeURIComponent(file.id)}/view`} target="_blank" rel="noopener noreferrer">{file.name} <span aria-hidden="true">&nearr;</span></a>
+                      <small>{[subject.slug === 'featured' ? materials.name : subject.name, file.path].filter(Boolean).join(' / ')}</small>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+            <a href="#top" class="back-link back-top">Back to subjects &uarr;</a>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .catalogue { color: hsl(var(--foreground)); }
+  .back-link { font-size: .875rem; color: hsl(var(--muted-foreground)); }
+  .back-link:hover { color: hsl(var(--foreground)); text-decoration: underline; }
+  .catalogue-heading { display: grid; gap: .75rem; margin: 2rem 0 1.5rem; max-width: 48rem; }
+  .eyebrow { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+  h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); font-weight: 750; line-height: 1.2; letter-spacing: -.03em; }
+  .catalogue-heading > p:not(.eyebrow) { font-size: .875rem; line-height: 1.65; color: hsl(var(--muted-foreground)); }
+  .subject-links { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.5rem; }
+  .subject-links a { padding: .45rem .7rem; border: 1px solid hsl(var(--border)); border-radius: .5rem; background: hsl(var(--card)); font-size: .75rem; }
+  .subject-links a:hover { background: hsl(var(--accent)); }
+  .subject-list { display: grid; gap: .75rem; }
+  .subject { border: 1px solid hsl(var(--border)); border-radius: .75rem; background: hsl(var(--card)); overflow: clip; scroll-margin-top: 6rem; }
+  summary { cursor: pointer; padding: 1rem; font-size: .875rem; }
+  summary:hover { background: hsl(var(--accent) / .6); }
+  summary::marker { color: hsl(var(--muted-foreground)); }
+  .subject-name { font-weight: 650; font-size: 1rem; }
+  .count { display: inline-block; margin-left: .65rem; font-size: .75rem; font-weight: 400; color: hsl(var(--muted-foreground)); }
+  .subject-content { border-top: 1px solid hsl(var(--border)); padding: 0 1rem 1rem; }
+  .subject-description { margin: 1rem 0; font-size: .8125rem; line-height: 1.5; color: hsl(var(--muted-foreground)); }
+  .category { border-top: 1px solid hsl(var(--border)); }
+  .category summary { padding: .9rem .25rem; font-weight: 600; overflow-wrap: anywhere; }
+  .file-list { list-style: none; margin: 0; padding: 0; }
+  .file-list li { display: grid; gap: .25rem; padding: .75rem .25rem; border-top: 1px solid hsl(var(--border) / .5); overflow-wrap: anywhere; }
+  .file-list a { width: fit-content; font-size: .8125rem; text-decoration: underline; text-underline-offset: 3px; line-height: 1.6; }
+  .file-list a:hover { text-decoration-thickness: 2px; }
+  .file-list small { font-size: .7rem; line-height: 1.5; color: hsl(var(--muted-foreground)); }
+  .back-top { display: inline-block; margin-top: 1rem; }
+  a:focus-visible, summary:focus-visible { outline: 3px solid hsl(var(--ring)); outline-offset: 3px; border-radius: .25rem; }
+  @media (max-width: 420px) { .subject > summary > .count { display: block; margin: .3rem 0 0 1rem; } }
+</style>

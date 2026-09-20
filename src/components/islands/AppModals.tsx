@@ -23,7 +23,7 @@ interface ExplorerState {
 
 /**
  * APP MODALS MASTER COORDINATOR ISLAND
- * Hydrated via client:idle on the root layout.
+ * Hydrated via client:load on the root layout.
  * Listens for global 'app:open-modal' CustomEvents and 'Ctrl+K' / 'Cmd+K' shortcuts,
  * and orchestrates the presentation of all client dialogs with lazy asset hydration.
  */

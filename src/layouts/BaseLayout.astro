@@ -1,6 +1,7 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import AppModals from "../components/islands/AppModals";
 import "../index.css";
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
   description?: string;
   currentPath?: string;
   ogImage?: string;
+  selectionOnly?: boolean;
 }
 
 const {
@@ -15,6 +17,7 @@ const {
   description = "Comprehensive educational hub for ICSE Class 10 students. Access official syllabi, specimen papers, chapter notes, and quizzes.",
   currentPath = Astro.url.pathname,
   ogImage = "/og-image.jpg",
+  selectionOnly = false,
 } = Astro.props;
 
 const canonicalUrl = new URL(currentPath, Astro.site || "https://class10icse.pages.dev").href;
@@ -61,16 +64,13 @@ const canonicalUrl = new URL(currentPath, Astro.site || "https://class10icse.pag
     </script>
   </head>
   <body class="bg-background text-foreground min-h-screen flex flex-col antialiased selection:bg-primary/20 selection:text-primary relative">
-    <!-- Ambient glowing backdrop blobs -->
-    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
-      <div class="absolute inset-0 bg-background"></div>
-      <div class="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full opacity-20 dark:opacity-10 blur-3xl animate-pulse" style="background: hsl(var(--primary));"></div>
-      <div class="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full opacity-15 dark:opacity-[0.07] blur-3xl animate-pulse" style="background: hsl(var(--primary) / 0.7); animation-delay: 2s;"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full opacity-10 dark:opacity-[0.05] blur-3xl animate-pulse" style="background: hsl(var(--accent)); animation-delay: 4s;"></div>
+    <div class="breathing-background" aria-hidden="true">
+      <div class="breathing-orb breathing-orb-one"></div>
+      <div class="breathing-orb breathing-orb-two"></div>
     </div>
 
     <!-- Global Header -->
-    <Header currentPath={currentPath} />
+    {!selectionOnly && <Header currentPath={currentPath} />}
 
     <!-- Main Content Shell -->
     <main class="min-h-screen flex-1">
@@ -78,9 +78,10 @@ const canonicalUrl = new URL(currentPath, Astro.site || "https://class10icse.pag
     </main>
 
     <!-- Global Footer -->
-    <Footer />
+    {!selectionOnly && <Footer />}
 
-    <!-- Slot for Island Modals (Search, Info, Donate, Quizzes, Explorer) -->
+    <!-- Shared dialogs power navigation and search on every page. -->
+    {!selectionOnly && <AppModals client:load />}
     <slot name="modals" />
   </body>
 </html>

@@ -1,260 +1,41 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { getStudyMaterialsSync, countFiles, type SubjectSummary } from "../lib/data";
-import type { FileNode } from "../lib/schemas";
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ClassNavigation from '../components/ClassNavigation.astro';
+import ResourceLibrary from '../components/islands/ResourceLibrary';
+import { getStudyMaterialsSync, getSubjectSummary } from '../lib/data';
+import { collectLibraryFiles, getLibraryCategories, type LibrarySubject } from '../lib/resource-library';
 
-const studyData = getStudyMaterialsSync();
-const topLevelFolders = (studyData.children || []).filter((c) => c.type === "folder");
-const topLevelFiles = (studyData.children || []).filter((c) => c.type === "file");
-
-// Target subjects in standard curriculum order
-const targetSubjectNames = [
-  "Biology",
-  "Chemistry",
-  "Physics",
-  "Maths",
-  "English",
-  "Geography",
-  "Hindi",
-  "History & Civics",
-  "Commercial Applications",
-  "Computer Applications",
-  "PYQ Prelims",
-];
-
-const subjects = targetSubjectNames.map((name) => {
-  const folder = topLevelFolders.find((f) => f.name === name);
-  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+const materials = getStudyMaterialsSync();
+const subjects: LibrarySubject[] = getSubjectSummary(materials).map(subject => {
+  const folder = materials.children?.find(child => child.type === 'folder' && child.name === subject.name);
+  const categories = folder ? getLibraryCategories(folder) : [];
   return {
-    name,
-    slug,
-    folder,
-    fileCount: folder ? countFiles(folder) : 0,
+    name: subject.name,
+    slug: subject.path.split('#')[1],
+    description: subject.description,
+    categories,
+    count: categories.reduce((sum, category) => sum + category.count, 0),
   };
 });
-
-// Helper to flatten a subject tree into categorized items for clean HTML rendering
-function getSubjectItems(node?: FileNode, maxLeaves = 40): { folders: { name: string; files: FileNode[] }[]; directFiles: FileNode[]; totalFiles: number } {
-  if (!node || !node.children) {
-    return { folders: [], directFiles: [], totalFiles: 0 };
-  }
-
-  const directFiles = node.children.filter((c) => c.type === "file");
-  const subFolders = node.children.filter((c) => c.type === "folder");
-
-  const folders: { name: string; files: FileNode[] }[] = [];
-
-  for (const sf of subFolders) {
-    // Collect all leaf files under this subfolder recursively
-    const leaves: FileNode[] = [];
-    function collect(n: FileNode) {
-      if (n.type === "file" && n.id) {
-        leaves.push(n);
-      } else if (n.children) {
-        for (const ch of n.children) collect(ch);
-      }
-    }
-    collect(sf);
-
-    folders.push({
-      name: sf.name,
-      files: leaves.slice(0, maxLeaves),
-    });
-  }
-
-  return {
-    folders,
-    directFiles,
-    totalFiles: countFiles(node),
-  };
-}
+const featured = (materials.children || []).filter(child => child.type === 'file').flatMap(child => collectLibraryFiles(child));
+if (featured.length) subjects.push({
+  name: 'Featured books', slug: 'featured', description: 'Question banks and handbooks covering multiple Class 10 subjects.',
+  categories: [{ name: 'Question banks & handbooks', files: featured, count: featured.length }], count: featured.length,
+});
+// Small server-rendered previews; the complete existing data is fetched once in the browser.
+const previews = subjects.map(subject => ({ ...subject, categories: subject.categories.map(category => ({ ...category, files: category.files.slice(0, 5) })) }));
 ---
 
-<BaseLayout
-  title="ICSE Class 10 Study Materials, Revision Notes & Sample Papers"
-  description="Free comprehensive study materials, chapterwise revision notes, Selina solutions, Oswal sample papers, and prelim question papers for ICSE Class 10 students."
-  currentPath="/study-materials"
->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-
-    <!-- Breadcrumbs -->
-    <nav class="flex items-center gap-2 text-sm text-muted-foreground" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-foreground transition-colors">Home</a>
-      <span>/</span>
-      <span class="text-foreground font-medium">Study Materials</span>
-    </nav>
-
-    <!-- Header Section -->
-    <header class="space-y-4 border-b border-border/40 pb-8">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold">
-        6,200+ Verified Academic Resources
-      </div>
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight">
-        ICSE Class 10 Study Materials & Revision Catalog
-      </h1>
-      <p class="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed">
-        Curated chapterwise notes, textbook solutions (Selina, Frank, Oswal), formula charts, diagram sheets, and preliminary examination papers across all 11 core subjects. All documents are accessible via direct Google Drive links.
-      </p>
-
-      <!-- Section Navigation Pills -->
-      <div class="flex flex-wrap gap-2 pt-4">
-        {subjects.map((sub) => (
-          <a
-            href={`#${sub.slug}`}
-            class="px-3 py-1.5 rounded-lg border border-border bg-card/60 hover:bg-accent text-xs sm:text-sm font-medium transition-colors"
-          >
-            {sub.name} ({sub.fileCount})
-          </a>
-        ))}
-      </div>
-
-      <!-- Semantic Subject Index for Search Crawlers -->
-      <div class="sr-only" aria-hidden="true">
-        {subjects.map((s) => (
-          <span set:html={`${s.name} `} />
-        ))}
-      </div>
-    </header>
-
-    <!-- Top-Level Direct Recommended Publications -->
-    {topLevelFiles.length > 0 && (
-      <section class="space-y-4">
-        <h2 class="text-xl sm:text-2xl font-bold text-foreground">Featured Class 10 Question Banks & Handbooks</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {topLevelFiles.map((file) => (
-            <div class="rounded-xl border border-border bg-card p-4 hover:border-primary/40 transition-colors flex flex-col justify-between">
-              <div class="space-y-2">
-                <div class="p-1.5 w-fit rounded bg-primary/10 text-primary text-xs font-semibold uppercase">Featured</div>
-                <h3 class="text-sm font-bold text-foreground">{file.name}</h3>
-              </div>
-              <div class="pt-4 mt-auto flex items-center gap-3">
-                {file.id && (
-                  <a
-                    href={`https://drive.google.com/file/d/${file.id}/view`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
-                  >
-                    View Document &rarr;
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+<BaseLayout title="ICSE Class 10 Study Materials, Revision Notes & Sample Papers" description="Find free ICSE Class 10 notes, textbook solutions and practice papers. Browse by subject or search the full resource library. Classes 9, 11 and 12 coming soon." currentPath="/study-materials">
+  <div id="top" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
+    <nav class="flex items-center gap-2 text-xs text-muted-foreground mb-5" aria-label="Breadcrumb"><a href="/" class="hover:text-foreground">Home</a><span aria-hidden="true">/</span><span class="text-foreground">Study Materials</span></nav>
+    <ClassNavigation selectedClass={10} />
+    <ResourceLibrary subjects={previews} client:load />
+    <noscript>
+      <style>.resource-library { display: none; }</style>
+      <section class="mt-8 space-y-3"><h1 class="text-2xl font-bold">Class 10 Study Materials</h1><p>Class 9, 11 and 12 resources are coming soon. Browse all Class 10 files using the link below, or enable JavaScript for search and compact previews.</p>
+        <a class="inline-flex underline py-3" href="/study-materials/all">Browse all Class 10 resources</a>
       </section>
-    )}
-
-    <!-- Subject Sections -->
-    <div class="space-y-16">
-      {subjects.map((sub) => {
-        const data = getSubjectItems(sub.folder, sub.name === "PYQ Prelims" ? 25 : 50);
-        return (
-          <section id={sub.slug} class="space-y-6 scroll-mt-24 border-t border-border/40 pt-10">
-            <!-- Subject Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h2 class="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
-                  <span>{sub.name}</span>
-                  <span class="text-sm font-normal px-2.5 py-0.5 rounded-full bg-primary/10 text-primary">
-                    {sub.fileCount.toLocaleString()} resources
-                  </span>
-                </h2>
-                <p class="text-sm text-muted-foreground mt-1">
-                  Complete Class 10 ICSE study notes, chapter summaries, textbook solutions, and practice papers for {sub.name}.
-                </p>
-              </div>
-              <a
-                href="#top"
-                class="text-xs text-muted-foreground hover:text-foreground transition-colors self-start sm:self-auto"
-              >
-                &uarr; Back to top
-              </a>
-            </div>
-
-            <!-- Direct Files under this Subject -->
-            {data.directFiles.length > 0 && (
-              <div class="space-y-3">
-                <h3 class="text-base font-semibold text-foreground">Core Chapter Notes & Guides</h3>
-                <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {data.directFiles.map((file) => (
-                    <li class="rounded-lg border border-border/60 bg-card p-3.5 hover:border-primary/40 transition-colors flex flex-col justify-between">
-                      <span class="text-sm font-medium text-foreground leading-snug line-clamp-2">
-                        {file.name}
-                      </span>
-                      {file.id && (
-                        <div class="pt-3 mt-auto">
-                          <a
-                            href={`https://drive.google.com/file/d/${file.id}/view`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
-                          >
-                            Preview PDF &rarr;
-                          </a>
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            <!-- Sub-Folders & Categories -->
-            {data.folders.map((f) => (
-              <div class="space-y-3">
-                <h3 class="text-base font-semibold text-foreground flex items-center justify-between">
-                  <span>{f.name}</span>
-                  <span class="text-xs font-normal text-muted-foreground">
-                    {f.files.length} documents
-                  </span>
-                </h3>
-                <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {f.files.map((file) => (
-                    <li class="rounded-lg border border-border/60 bg-card p-3.5 hover:border-primary/40 transition-colors flex flex-col justify-between">
-                      <span class="text-sm font-medium text-foreground leading-snug line-clamp-2">
-                        {file.name}
-                      </span>
-                      {file.id && (
-                        <div class="pt-3 mt-auto">
-                          <a
-                            href={`https://drive.google.com/file/d/${file.id}/view`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
-                          >
-                            Open Resource &rarr;
-                          </a>
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </section>
-        );
-      })}
-    </div>
-
-    <!-- Related Navigation Links -->
-    <section class="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-4">
-      <h2 class="text-xl font-bold text-foreground">Explore More Resources</h2>
-      <p class="text-sm text-muted-foreground leading-relaxed">
-        Looking for official council syllabus documents, specimen question papers, or interactive tests? Check out our dedicated sections:
-      </p>
-      <div class="flex flex-wrap gap-4 pt-2">
-        <a href="/" class="text-sm font-semibold text-primary hover:underline">
-          &larr; Return to Home
-        </a>
-        <a href="/cisce" class="text-sm font-semibold text-primary hover:underline">
-          Official CISCE Directory &rarr;
-        </a>
-        <a href="/quizzes" class="text-sm font-semibold text-primary hover:underline">
-          Interactive Quizzes &rarr;
-        </a>
-      </div>
-    </section>
-
+    </noscript>
   </div>
 </BaseLayout>

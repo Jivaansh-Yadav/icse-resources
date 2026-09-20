@@ -35,3 +35,5 @@ service-account.json
 PROJECT.md
 TEST_INFRA.md
 TEST_READY.md
+.e2e-results.json
+
