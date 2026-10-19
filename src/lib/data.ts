@@ -111,7 +111,7 @@ export function getStudyMaterialsSync(): FileNode {
   // Use the same catalogue as the interactive library, including verified mirrors.
   const catalogPath = path.resolve(process.cwd(), 'public/data/resource-catalog.json');
   if (fs.existsSync(catalogPath)) return validateResourcesData(catalogMaterials(JSON.parse(fs.readFileSync(catalogPath, 'utf8')), '10'));
-  const filePath = resolveDataPath("study-materials.json");
+  const filePath = resolveDataPath("community-resources.json");
   try {
     const raw = fs.readFileSync(filePath, "utf-8");
     const json = JSON.parse(raw);
@@ -119,7 +119,7 @@ export function getStudyMaterialsSync(): FileNode {
   } catch {
     const catalogPath = path.resolve(process.cwd(), 'public/data/resource-catalog.json');
     if (fs.existsSync(catalogPath)) return validateResourcesData(catalogMaterials(JSON.parse(fs.readFileSync(catalogPath, 'utf8')), '10'));
-    throw new Error(`Data file not found at ${filePath}. Ensure public/data/study-materials.json exists.`);
+    throw new Error(`Data file not found at ${filePath}. Ensure public/data/community-resources.json exists.`);
   }
 }
 

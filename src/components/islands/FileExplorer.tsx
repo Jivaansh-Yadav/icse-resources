@@ -31,7 +31,7 @@ export interface FileExplorerProps {
  * FILE EXPLORER ISLAND
  * Provides hierarchical tree navigation, breadcrumbs, in-folder search,
  * slide transitions, and Google Drive preview/download.
- * Supports on-demand fetching of study-materials.json or cisce-resources.json.
+ * Supports on-demand fetching of community-resources.json or cisce-resources.json.
  */
 export const FileExplorer: React.FC<FileExplorerProps> = ({
   data: directData,
@@ -68,7 +68,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
       setError(null);
       const url =
         dataType === "study"
-          ? "/data/study-materials.json"
+          ? "/data/community-resources.json"
           : "/data/cisce-resources.json";
 
       fetch(url)

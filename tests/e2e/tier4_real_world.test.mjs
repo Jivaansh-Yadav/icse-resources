@@ -1,7 +1,7 @@
 import { describe, it, expect, readHtmlFile, readJsonData } from './runner.mjs';
 
 describe('Tier 4: Real-World Scenario 1 - Student finding Class 10 Biology notes', () => {
-  const studyData = readJsonData('study-materials.json');
+  const studyData = readJsonData('community-resources.json');
   const biologyNode = studyData.children.find(c => c.name === 'Biology');
 
   it('should verify Biology study materials data exists in data layer', () => {

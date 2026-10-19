@@ -130,7 +130,7 @@ function flattenTree(node, result = []) {
 // 🏁 Main
 (async () => {
   try {
-    const ROOT_FOLDER_ID = "1CkUuGnUR3idrhEBxgiV5U9fFf5RjbZQK";
+    const ROOT_FOLDER_ID = "15lHcFaOs2hybmjKuCj-F3lD_CrYTOnkX";
 
     const rootMeta = await drive.files.get({
       fileId: ROOT_FOLDER_ID,
@@ -146,8 +146,8 @@ function flattenTree(node, result = []) {
       f.name.toLowerCase().includes("cisce")
     );
 
-    const study = rootChildren.find(f =>
-      f.name.toLowerCase().includes("study")
+    const community = rootChildren.find(f =>
+      f.name.toLowerCase().includes("community")
     );
 
     // 📝 Write tree files
@@ -161,14 +161,14 @@ function flattenTree(node, result = []) {
       console.log("⚠️ CISCE folder not found");
     }
 
-    if (study) {
+    if (community) {
       fs.writeFileSync(
-        "public/data/study-materials.json",
-        JSON.stringify(study, null, 2)
+        "public/data/community-resources.json",
+        JSON.stringify(community, null, 2)
       );
-      console.log("✅ study-materials.json created");
+      console.log("✅ community-resources.json created");
     } else {
-      console.log("⚠️ Study Materials folder not found");
+      console.log("⚠️ Community Materials folder not found");
     }
 
     // 🔥 CREATE FLATTENED SEARCH INDEX (added)

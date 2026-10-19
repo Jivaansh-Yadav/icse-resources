@@ -83,7 +83,7 @@ describe('Tier 2: Boundary & Corner - Feature 2: Missing Files & Broken Resource
   });
 
   it('should verify core data files exist and have valid JSON syntax in public/data/', () => {
-    const studyPath = path.resolve(projectRoot, 'public/data/study-materials.json');
+    const studyPath = path.resolve(projectRoot, 'public/data/community-resources.json');
     const ciscePath = path.resolve(projectRoot, 'public/data/cisce-resources.json');
     const indexPath = path.resolve(projectRoot, 'public/data/search-index.json');
 
@@ -183,7 +183,7 @@ describe('Tier 2: Boundary & Corner - Feature 4: AdSense Cookie Disclosure in /p
 });
 
 describe('Tier 2: Boundary & Corner - Feature 5: Deep Subject Nesting & Large Data Structure Stress', () => {
-  const studyData = readJsonData('study-materials.json');
+  const studyData = readJsonData('community-resources.json');
 
   it('should verify root structure contains 11 core ICSE subjects and categories', () => {
     expect(studyData.name).toBe('Study Materials');

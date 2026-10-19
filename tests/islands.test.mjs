@@ -128,7 +128,7 @@ test('FileExplorer supports tree navigation with path stack and breadcrumbs', ()
 });
 
 test('FileExplorer supports on-demand data fetching for study and cisce datasets', () => {
-  assert.ok(fileExplorerContent.includes('/data/study-materials.json'), 'Must support study-materials.json');
+  assert.ok(fileExplorerContent.includes('/data/community-resources.json'), 'Must support community-resources.json');
   assert.ok(fileExplorerContent.includes('/data/cisce-resources.json'), 'Must support cisce-resources.json');
   assert.ok(fileExplorerContent.includes('dataType'), 'Must accept dataType prop');
 });
@@ -274,8 +274,8 @@ test('public/data/search-index.json is valid and parseable with 6,000+ items', (
   assert.ok(sample.name && sample.id && sample.path, 'Item must have name, id, path');
 });
 
-test('public/data/study-materials.json is valid and parseable with Class 10 subjects', () => {
-  const studyPath = path.join(PUBLIC_DATA_DIR, 'study-materials.json');
+test('public/data/community-resources.json is valid and parseable with Class 10 subjects', () => {
+  const studyPath = path.join(PUBLIC_DATA_DIR, 'community-resources.json');
   assert.strictEqual(fs.existsSync(studyPath), true);
   const raw = fs.readFileSync(studyPath, 'utf8');
   const data = JSON.parse(raw);
@@ -337,7 +337,7 @@ test('SearchModal query handles adversarial strings (regex specials, empty, long
 console.log(`\n${colors.bright}Suite 10: Deep Functional & Real-Data Tests${colors.reset}`);
 
 const fullSearchIndex = JSON.parse(fs.readFileSync(path.join(PUBLIC_DATA_DIR, 'search-index.json'), 'utf8'));
-const fullStudyMaterials = JSON.parse(fs.readFileSync(path.join(PUBLIC_DATA_DIR, 'study-materials.json'), 'utf8'));
+const fullStudyMaterials = JSON.parse(fs.readFileSync(path.join(PUBLIC_DATA_DIR, 'community-resources.json'), 'utf8'));
 const fullCisceResources = JSON.parse(fs.readFileSync(path.join(PUBLIC_DATA_DIR, 'cisce-resources.json'), 'utf8'));
 
 test('Full search index query "Biology" yields relevant curriculum files', () => {

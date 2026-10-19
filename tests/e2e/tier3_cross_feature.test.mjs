@@ -65,7 +65,7 @@ describe('Tier 3: Cross-Feature - Combination 2: Spotlight Search Modal + Previe
 });
 
 describe('Tier 3: Cross-Feature - Combination 3: Data Baking + Static Route Navigation', () => {
-  const studyData = readJsonData('study-materials.json');
+  const studyData = readJsonData('community-resources.json');
   const cisceData = readJsonData('cisce-resources.json');
 
   it('should link class selection to the subject browser', () => {
