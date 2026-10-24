@@ -130,7 +130,7 @@ function flattenTree(node, result = []) {
 // 🏁 Main
 (async () => {
   try {
-    const ROOT_FOLDER_ID = "15lHcFaOs2hybmjKuCj-F3lD_CrYTOnkX";
+    const ROOT_FOLDER_ID = "1CNPUebqgrIWqxH4Jn-4IMk1mnMB2u5ml";
 
     const rootMeta = await drive.files.get({
       fileId: ROOT_FOLDER_ID,
