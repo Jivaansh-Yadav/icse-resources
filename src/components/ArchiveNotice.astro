@@ -1,15 +1,18 @@
 ---
 // ArchiveNotice.astro
 //
-// One-time, dismissible notice telling visitors this catalogue is frozen and
-// pointing them at Lambda Prep (https://lambda-prep.pages.dev).
+// Notice telling visitors this catalogue is frozen and pointing them at
+// Lambda Prep (https://lambda-prep.pages.dev). It shows on every page load:
+// there is no "don't show again" flag, only an in-page dismiss.
 //
-// Design notes: warm paper card on the site's cream/terracotta system, an
-// editorial "notice slip" rather than a blocking modal so the page underneath
-// stays usable. All colours come from the existing CSS variables, so the
-// dark theme follows automatically. No framework island — plain markup plus a
-// small inline script.
+// Design notes: warm paper card on the site's cream/terracotta system.
+// Phones keep the editorial slip docked to the bottom edge; desktop centres
+// it behind a light scrim. All colours come from the existing CSS variables,
+// so the dark theme follows automatically. No framework island — plain
+// markup plus a small inline script.
 ---
+
+<div id="archive-notice-scrim" class="archive-notice__scrim" data-archive-close hidden></div>
 
 <aside
   id="archive-notice"
@@ -61,7 +64,6 @@
     <button type="button" class="archive-notice__ghost" data-archive-close>Keep browsing</button>
   </div>
 
-  <button type="button" class="archive-notice__never" data-archive-never>Don&rsquo;t show this again</button>
 </aside>
 
 <style>
@@ -84,8 +86,19 @@
     animation: archive-notice-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .archive-notice[hidden] {
+  .archive-notice[hidden],
+  .archive-notice__scrim[hidden] {
     display: none;
+  }
+
+  .archive-notice__scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 59;
+    background: hsl(var(--foreground) / 0.22);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    animation: archive-notice-fade 0.3s ease-out both;
   }
 
   /* A quiet terracotta wash in the corner, echoing the breathing orbs. */
@@ -262,30 +275,16 @@
     background: hsl(var(--accent));
   }
 
-  .archive-notice__never {
-    display: block;
-    margin: 0.7rem 0 0;
-    padding: 0;
-    border: 0;
-    background: none;
-    font-size: 0.7rem;
-    color: hsl(var(--muted-foreground) / 0.85);
-    text-decoration: underline;
-    text-decoration-color: hsl(var(--border));
-    text-underline-offset: 3px;
-    cursor: pointer;
-  }
-
-  .archive-notice__never:hover {
-    color: hsl(var(--foreground));
-  }
-
   .archive-notice__close:focus-visible,
   .archive-notice__ghost:focus-visible,
-  .archive-notice__never:focus-visible,
   .archive-notice__cta:focus-visible {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+  }
+
+  @keyframes archive-notice-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
 
   @keyframes archive-notice-in {
@@ -296,6 +295,24 @@
     to {
       opacity: 1;
       transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Desktop: centre the card on screen instead of docking it bottom-right. */
+  @media (min-width: 900px) {
+    .archive-notice {
+      right: auto;
+      bottom: auto;
+      left: 50%;
+      top: 50%;
+      translate: -50% -50%;
+    }
+  }
+
+  /* Phones: the slip is docked, so it does not dim the page. */
+  @media (max-width: 899px) {
+    .archive-notice__scrim {
+      display: none;
     }
   }
 
@@ -325,38 +342,29 @@
     const node = document.getElementById('archive-notice');
     if (!node) return;
 
-    const VISIT_KEY = 'icse_archive_notice_seen';
-    const NEVER_KEY = 'icse_archive_notice_hidden';
+    const scrim = document.getElementById('archive-notice-scrim');
 
-    try {
-      if (localStorage.getItem(NEVER_KEY) === '1') return;
-      if (sessionStorage.getItem(VISIT_KEY) === '1') return;
-    } catch (_) {
-      /* storage blocked — show the notice anyway */
-    }
-
-    const hide = (permanent) => {
+    // No persistence: the notice is part of every page load. Closing it only
+    // hides it for the current view.
+    const hide = () => {
       node.hidden = true;
-      try {
-        sessionStorage.setItem(VISIT_KEY, '1');
-        if (permanent) localStorage.setItem(NEVER_KEY, '1');
-      } catch (_) {}
+      if (scrim) scrim.hidden = true;
     };
 
-    node.querySelectorAll('[data-archive-close]').forEach((el) => {
-      el.addEventListener('click', () => hide(false));
+    document.querySelectorAll('[data-archive-close]').forEach((el) => {
+      el.addEventListener('click', hide);
     });
 
-    const never = node.querySelector('[data-archive-never]');
-    if (never) never.addEventListener('click', () => hide(true));
-
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !node.hidden) hide(false);
+      if (event.key === 'Escape' && !node.hidden) hide();
     });
 
     // Let the page paint first so the card slides in over real content.
     requestAnimationFrame(() => {
       node.hidden = false;
+      // The scrim only exists from the tablet breakpoint up; CSS hides it
+      // on phones, where the card stays a docked slip.
+      if (scrim) scrim.hidden = false;
     });
   })();
 </script>
