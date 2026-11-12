@@ -2,6 +2,7 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import AppModals from "../components/islands/AppModals";
+import ArchiveNotice from "../components/ArchiveNotice.astro";
 import "../index.css";
 
 interface Props {
@@ -79,6 +80,9 @@ const canonicalUrl = new URL(currentPath, Astro.site || "https://class10icse.pag
 
     <!-- Global Footer -->
     {!selectionOnly && <Footer />}
+
+    <!-- Tells visitors the catalogue is frozen; links to Lambda Prep. -->
+    <ArchiveNotice />
 
     <!-- Shared dialogs power navigation and search on every page. -->
     {!selectionOnly && <AppModals client:load />}
