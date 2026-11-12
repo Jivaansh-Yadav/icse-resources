@@ -1,44 +1,89 @@
 /* =============================================
    ARCHIVE NOTICE
-   One-time dialog announcing that this site is frozen and pointing at
-   Lambda Prep. Kept monochrome to match the rest of the UI.
+   Sheet announcing that this site has been superseded by Lambda Prep.
+   Bottom sheet on phones, centred card on desktop. Palette stays
+   monochrome; the only colour is the primary glow.
    ============================================= */
 
-.archive-notice-backdrop {
-  background: rgb(0 0 0 / 0.55);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  animation: archive-notice-fade 220ms ease-out both;
+.archive-sheet-layer {
+  background: linear-gradient(
+    to top,
+    hsl(var(--background) / 0.94) 0%,
+    hsl(var(--background) / 0.78) 38%,
+    hsl(var(--background) / 0.28) 78%,
+    hsl(var(--background) / 0.04) 100%
+  );
+  animation: archive-sheet-fade 240ms ease-out both;
 }
 
-.archive-notice-panel {
-  animation: archive-notice-rise 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
+.archive-sheet {
+  box-shadow: 0 -12px 40px -18px rgb(2 6 23 / 0.28), 0 24px 60px -30px rgb(2 6 23 / 0.4);
+  animation: archive-sheet-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* The closed book settles in a beat after the card. */
-.archive-notice-book {
-  animation: archive-notice-settle 480ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+.archive-sheet-glow {
+  position: absolute;
+  top: -6rem;
+  right: -4rem;
+  width: 15rem;
+  height: 15rem;
+  border-radius: 9999px;
+  background: hsl(var(--primary) / 0.16);
+  filter: blur(48px);
+  pointer-events: none;
 }
 
-@keyframes archive-notice-fade {
+.archive-sheet-tile {
+  animation: archive-sheet-tile-in 360ms ease-out both;
+}
+
+.archive-sheet-tile:nth-child(2) {
+  animation-delay: 70ms;
+}
+
+.archive-sheet-tile:nth-child(3) {
+  animation-delay: 140ms;
+}
+
+/* Desktop: the sheet becomes a centred dialog, so dim the page evenly. */
+@media (min-width: 640px) {
+  .archive-sheet-layer {
+    background: hsl(222.2 47.4% 11.2% / 0.45);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+
+  .dark .archive-sheet-layer {
+    background: rgb(0 0 0 / 0.55);
+  }
+
+  .archive-sheet-glow {
+    top: -7rem;
+    right: -5rem;
+    width: 18rem;
+    height: 18rem;
+  }
+}
+
+@keyframes archive-sheet-fade {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-@keyframes archive-notice-rise {
-  from { opacity: 0; transform: translateY(16px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes archive-sheet-rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes archive-notice-settle {
-  from { opacity: 0; transform: rotate(-6deg) scale(0.9); }
-  to   { opacity: 1; transform: rotate(0deg) scale(1); }
+@keyframes archive-sheet-tile-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .archive-notice-backdrop,
-  .archive-notice-panel,
-  .archive-notice-book {
+  .archive-sheet-layer,
+  .archive-sheet,
+  .archive-sheet-tile {
     animation: none;
   }
 }
